@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Learning Results - 2025-06-30 07:32:47</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .stats {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .stats h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .stat-label {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .stat-value {
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #e3f2fd;
+        }
+        .itemset {
+            font-family: monospace;
+            background-color: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .utility {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .support {
+            color: #e74c3c;
+        }
+        .timestamp {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Federated Learning High-Utility Itemset Mining Results</h1>
+        
+        <div class="timestamp">
+            Generated on 2025-06-30 at 07:32:47
+        </div>
+        
+        <div class="stats">
+            <h3>Server Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Total Transactions</div>
+                    <div class="stat-value">4,141</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Participating Clients</div>
+                    <div class="stat-value">3</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Global Utility Sum</div>
+                    <div class="stat-value">334.00</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Privacy Budget Used</div>
+                    <div class="stat-value">1.00</div>
+                </div>
+            </div>
+        </div>
+        
+        <h3>Global High-Utility Itemsets (5 found)</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Itemset</th>
+                    <th>Utility</th>
+                    <th>Support</th>
+                    <th>Items</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>1</td>
+                    <td><span class="itemset">egg, rice</span></td>
+                    <td class="utility">85.50</td>
+                    <td class="support">0.15</td>
+                    <td>2</td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td><span class="itemset">milk, bread, butter</span></td>
+                    <td class="utility">72.30</td>
+                    <td class="support">0.08</td>
+                    <td>3</td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td><span class="itemset">sugar</span></td>
+                    <td class="utility">65.10</td>
+                    <td class="support">0.25</td>
+                    <td>1</td>
+                </tr>
+
+                <tr>
+                    <td>4</td>
+                    <td><span class="itemset">sugar, rice</span></td>
+                    <td class="utility">58.70</td>
+                    <td class="support">0.12</td>
+                    <td>2</td>
+                </tr>
+
+                <tr>
+                    <td>5</td>
+                    <td><span class="itemset">egg, milk</span></td>
+                    <td class="utility">52.40</td>
+                    <td class="support">0.10</td>
+                    <td>2</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <h3>Client Results Summary</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Client ID</th>
+                    <th>Itemsets Found</th>
+                    <th>Local Utility Sum</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>client-1</td>
+                    <td>3</td>
+                    <td class="utility">221.90</td>
+                </tr>
+
+                <tr>
+                    <td>client-2</td>
+                    <td>3</td>
+                    <td class="utility">176.20</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>

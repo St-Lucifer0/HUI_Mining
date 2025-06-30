@@ -1,0 +1,6 @@
+Rank,Itemset,Items,Utility,Support,Item_Count
+1,"egg, rice","['egg', 'rice']",85.5,0.15,2
+2,"milk, bread, butter","['milk', 'bread', 'butter']",72.3,0.08,3
+3,sugar,['sugar'],65.1,0.25,1
+4,"sugar, rice","['sugar', 'rice']",58.7,0.12,2
+5,"egg, milk","['egg', 'milk']",52.4,0.1,2
