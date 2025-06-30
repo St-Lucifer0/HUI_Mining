@@ -38,16 +38,6 @@ def print_header_table(header_table):
 
 
 def main():
-    # sample dataset
-    # transaction_database = [
-    # [("rice", 2), ("egg", 1), ("sugar", 1)],
-    # [("rice", 1), ("sugar", 3)],
-    # [("egg", 2), ("sugar", 2)],
-    # [("rice", 3), ("egg", 1)]
-    # ]
-    # external_utility = {"rice": 5, "egg": 3, "sugar": 2}
-    # min_util = 15  # TWU threshold for pruning
-    # epsilon = 1.0
 
     # Initialize DataPreprocessor with FoodMart dataset path
     dataset_path = r"C:\Users\User\PycharmProjects\FP-GROWTH(Enhanced)_for_HUIs\foodmart_dataset_csv.csv"
@@ -60,7 +50,7 @@ def main():
         return
 
     external_utility = processor.get_dummy_foodmart_item_utilities()
-    min_util = 50
+    min_util = 100
     epsilon = 1.0
 
     try:

@@ -51,11 +51,12 @@ def construct_huim_fp_tree(transaction_database, sorted_items, external_utility)
                 _update_header_link(item, child, header_table)
             else:
                 # update existing node
-                child.count = 1
+                child.count += 1
                 child.utility += item_utility_in_transaction
-                current_node = child
+            
+            current_node = child
 
-        return root, header_table
+    return root, header_table
 
 
 # a function to update the header link

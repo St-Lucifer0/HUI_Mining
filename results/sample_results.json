@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "timestamp": "2025-06-30T07:32:47.830396",
+    "total_itemsets": 5,
+    "server_stats": {
+      "total_transactions": 4141,
+      "participating_clients": 3,
+      "global_utility_sum": 334.0,
+      "privacy_budget_used": 1.0
+    }
+  },
+  "global_results": [
+    {
+      "items": [
+        "egg",
+        "rice"
+      ],
+      "utility": 85.5,
+      "support": 0.15,
+      "item_count": 2
+    },
+    {
+      "items": [
+        "milk",
+        "bread",
+        "butter"
+      ],
+      "utility": 72.3,
+      "support": 0.08,
+      "item_count": 3
+    },
+    {
+      "items": [
+        "sugar"
+      ],
+      "utility": 65.1,
+      "support": 0.25,
+      "item_count": 1
+    },
+    {
+      "items": [
+        "sugar",
+        "rice"
+      ],
+      "utility": 58.7,
+      "support": 0.12,
+      "item_count": 2
+    },
+    {
+      "items": [
+        "egg",
+        "milk"
+      ],
+      "utility": 52.4,
+      "support": 0.1,
+      "item_count": 2
+    }
+  ],
+  "client_results": {
+    "client-1": {
+      "itemsets": [
+        {
+          "items": [
+            "egg",
+            "rice"
+          ],
+          "utility": 85.5,
+          "support": 0.15
+        },
+        {
+          "items": [
+            "milk",
+            "bread",
+            "butter"
+          ],
+          "utility": 72.3,
+          "support": 0.08
+        },
+        {
+          "items": [
+            "sugar"
+          ],
+          "utility": 65.1,
+          "support": 0.25
+        }
+      ],
+      "stats": {
+        "local_utility_sum": 221.9,
+        "transaction_count": 1500
+      }
+    },
+    "client-2": {
+      "itemsets": [
+        {
+          "items": [
+            "sugar"
+          ],
+          "utility": 65.1,
+          "support": 0.25
+        },
+        {
+          "items": [
+            "sugar",
+            "rice"
+          ],
+          "utility": 58.7,
+          "support": 0.12
+        },
+        {
+          "items": [
+            "egg",
+            "milk"
+          ],
+          "utility": 52.4,
+          "support": 0.1
+        }
+      ],
+      "stats": {
+        "local_utility_sum": 176.2,
+        "transaction_count": 1200
+      }
+    }
+  }
+}

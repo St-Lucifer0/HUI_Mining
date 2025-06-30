@@ -24,17 +24,17 @@ def construct_pruned_item_list(transaction_database, min_util, external_utility)
                 raise ValueError(f"Quantity for item {item} must be non-negative")
             transaction_utility += quantity * external_utility[item]
 
-            # Update TWU for each item in the transaction
-            for item, _ in transaction:
-                item_twu[item] = item_twu.get(item, 0) + transaction_utility
+        # Update TWU for each item in the transaction
+        for item, _ in transaction:
+            item_twu[item] = item_twu.get(item, 0) + transaction_utility
 
-        # filter high utility items
-        high_utility_items = {item for item, twu in item_twu.items() if twu >= min_util}
+    # filter high utility items
+    high_utility_items = {item for item, twu in item_twu.items() if twu >= min_util}
 
-        # sort high-utility items by TWU in descending order
-        sorted_items = sorted(high_utility_items, key=lambda item: item_twu[item], reverse=True)
+    # sort high-utility items by TWU in descending order
+    sorted_items = sorted(high_utility_items, key=lambda item: item_twu[item], reverse=True)
 
-        return sorted_items
+    return sorted_items
 
 
 

@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package federated_learning;
+
+// Service definition for federated learning
+service FederatedLearningService {
+  // Client registers with the server
+  rpc RegisterClient (ClientRegistration) returns (RegistrationResponse);
+  
+  // Client sends local high-utility itemsets to server
+  rpc SendLocalResults (LocalResults) returns (ServerAcknowledgment);
+  
+  // Client requests global aggregated results
+  rpc GetGlobalResults (GlobalResultsRequest) returns (GlobalResults);
+  
+  // Server broadcasts global model to clients
+  rpc BroadcastGlobalModel (GlobalModel) returns (ClientAcknowledgment);
+  
+  // Health check
+  rpc HealthCheck (HealthRequest) returns (HealthResponse);
+}
+
+// Client registration message
+message ClientRegistration {
+  string client_id = 1;
+  string client_address = 2;
+  int32 port = 3;
+  repeated string capabilities = 4;
+}
+
+// Registration response
+message RegistrationResponse {
+  bool success = 1;
+  string message = 2;
+  string session_id = 3;
+  GlobalConfig config = 4;
+}
+
+// Global configuration
+message GlobalConfig {
+  double min_utility_threshold = 1;
+  double epsilon = 2;
+  int32 num_rounds = 3;
+  int32 timeout_seconds = 4;
+}
+
+// Local results from client
+message LocalResults {
+  string client_id = 1;
+  string session_id = 2;
+  repeated HighUtilityItemset itemsets = 3;
+  double local_utility_sum = 4;
+  int32 transaction_count = 5;
+  bytes encrypted_data = 6;
+}
+
+// High utility itemset
+message HighUtilityItemset {
+  repeated string items = 1;
+  double utility = 2;
+  double support = 3;
+}
+
+// Server acknowledgment
+message ServerAcknowledgment {
+  bool success = 1;
+  string message = 2;
+  int32 round_number = 3;
+}
+
+// Global results request
+message GlobalResultsRequest {
+  string client_id = 1;
+  string session_id = 2;
+}
+
+// Global results
+message GlobalResults {
+  repeated HighUtilityItemset global_itemsets = 1;
+  double global_utility_sum = 2;
+  int32 total_transactions = 3;
+  int32 participating_clients = 4;
+  double privacy_budget_used = 5;
+}
+
+// Global model broadcast
+message GlobalModel {
+  repeated HighUtilityItemset aggregated_itemsets = 1;
+  double aggregated_utility_threshold = 2;
+  int32 round_number = 3;
+  bool is_final = 4;
+}
+
+// Client acknowledgment
+message ClientAcknowledgment {
+  string client_id = 1;
+  bool received = 2;
+  string message = 3;
+}
+
+// Health check request
+message HealthRequest {
+  string client_id = 1;
+}
+
+// Health check response
+message HealthResponse {
+  bool healthy = 1;
+  string status = 2;
+  int64 timestamp = 3;
+} 

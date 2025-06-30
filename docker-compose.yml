@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  # Federated Learning Server
+  federated-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: federated-server
+    ports:
+      - "50051:50051"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - federated-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import grpc; channel = grpc.insecure_channel('localhost:50051'); exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Client 1 - Using FoodMart dataset
+  client-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: federated-client-1
+    environment:
+      - CLIENT_ID=client-1
+      - SERVER_ADDRESS=federated-server
+      - SERVER_PORT=50051
+      - DATASET_PATH=/app/foodmart_dataset_csv.csv
+      - THRESHOLD=50
+      - EPSILON=1.0
+      - USE_PRIVACY=true
+    volumes:
+      - ./foodmart_dataset_csv.csv:/app/foodmart_dataset_csv.csv
+      - ./logs:/app/logs
+    networks:
+      - federated-network
+    depends_on:
+      federated-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Client 2 - Using sample data
+  client-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: federated-client-2
+    environment:
+      - CLIENT_ID=client-2
+      - SERVER_ADDRESS=federated-server
+      - SERVER_PORT=50051
+      - THRESHOLD=30
+      - EPSILON=0.8
+      - USE_PRIVACY=true
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - federated-network
+    depends_on:
+      federated-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Client 3 - Using sample data with different parameters
+  client-3:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: federated-client-3
+    environment:
+      - CLIENT_ID=client-3
+      - SERVER_ADDRESS=federated-server
+      - SERVER_PORT=50051
+      - THRESHOLD=40
+      - EPSILON=1.2
+      - USE_PRIVACY=false
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - federated-network
+    depends_on:
+      federated-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Monitoring service (optional)
+  monitoring:
+    image: nginx:alpine
+    container_name: federated-monitoring
+    ports:
+      - "8080:80"
+    volumes:
+      - ./monitoring/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx
+    networks:
+      - federated-network
+    depends_on:
+      - federated-server
+    restart: unless-stopped
+
+networks:
+  federated-network:
+    driver: bridge
+
+volumes:
+  logs: 

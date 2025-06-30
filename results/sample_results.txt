@@ -1,0 +1,29 @@
+================================================================================
+FEDERATED LEARNING HIGH-UTILITY ITEMSET MINING RESULTS
+================================================================================
+Generated: 2025-06-30 07:32:47
+
+SERVER STATISTICS:
+----------------------------------------
+Total Transactions: 4141
+Participating Clients: 3
+Global Utility Sum: 334.00
+Privacy Budget Used: 1.00
+
+GLOBAL HIGH-UTILITY ITEMSETS:
+----------------------------------------
+Total Itemsets Found: 5
+
+Rank | Itemset | Utility | Support | Items
+--------------------------------------------------------------------------------
+   1 | egg, rice                      |   85.50 |   0.15 | 2
+   2 | milk, bread, butter            |   72.30 |   0.08 | 3
+   3 | sugar                          |   65.10 |   0.25 | 1
+   4 | sugar, rice                    |   58.70 |   0.12 | 2
+   5 | egg, milk                      |   52.40 |   0.10 | 2
+
+CLIENT RESULTS SUMMARY:
+----------------------------------------
+Client client-1: 3 itemsets, Utility: 221.90
+Client client-2: 3 itemsets, Utility: 176.20
+================================================================================

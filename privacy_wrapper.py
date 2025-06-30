@@ -92,8 +92,10 @@ class PrivacyPreservingHUIMining:
         print(f"Step 4: Applying Differential Privacy (Laplace Noise, epsilon={epsilon}) to TWU scores...")
         max_tx_utility_for_sensitivity = 0
         if transactions_list:
-            max_tx_utility_for_sensitivity = max(sum(count * item_utils_dict.get(item, 0) for item, count in tx)
-                                                 for tx in transactions_list if tx)
+            max_tx_utility_for_sensitivity = max(
+                sum(count * item_utils_dict.get(item, 0) for item, count in tx)
+                for tx in transactions_list if tx
+            )
         print(f" Sensitivity for TWU (max transaction utility): {max_tx_utility_for_sensitivity}")
 
         shared_noisy_twus_obj = mpc.apply_noise_to_shared_data(encrypted_twu_obj, max_tx_utility_for_sensitivity)
