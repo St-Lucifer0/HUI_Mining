@@ -60,7 +60,7 @@ class PerformanceBenchmark:
         self.start_benchmark(f"single_mining_{dataset_size}")
         
         # Load data
-        processor = DataProcessor("foodmart_dataset_csv.csv")
+        processor = DataProcessor("generated_foodmart_dataset.csv")
         transactions = processor.load_foodmart_transactions_as_tuple()[:dataset_size]
         external_utility = processor.get_dummy_foodmart_item_utilities()
         
@@ -82,7 +82,7 @@ class PerformanceBenchmark:
         from privacy_wrapper import PrivacyPreservingHUIMining
         from data_parser import DataProcessor
         
-        processor = DataProcessor("foodmart_dataset_csv.csv")
+        processor = DataProcessor("generated_foodmart_dataset.csv")
         transactions = processor.load_foodmart_transactions_as_tuple()[:1000]
         external_utility = processor.get_dummy_foodmart_item_utilities()
         min_util = 50
@@ -107,15 +107,14 @@ class PerformanceBenchmark:
     def benchmark_federated_rounds(self, num_clients: int = 3, num_rounds: int = 3):
         """Benchmark federated learning rounds"""
         from federated_client import FederatedLearningClient
-        from federated_server import FederatedLearningServer
+        from federated_server import serve
         import threading
         import time
         
         self.start_benchmark(f"federated_{num_clients}_clients_{num_rounds}_rounds")
         
         # Start server
-        server = FederatedLearningServer(min_utility_threshold=50, epsilon=1.0, num_rounds=num_rounds)
-        server_thread = threading.Thread(target=server.start, args=('localhost', 50051))
+        server_thread = threading.Thread(target=serve, args=('localhost', 50051, 50, 1.0, num_rounds))
         server_thread.daemon = True
         server_thread.start()
         

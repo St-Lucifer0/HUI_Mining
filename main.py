@@ -40,7 +40,7 @@ def print_header_table(header_table):
 def main():
 
     # Initialize DataPreprocessor with FoodMart dataset path
-    dataset_path = r"C:\Users\User\PycharmProjects\FP-GROWTH(Enhanced)_for_HUIs\foodmart_dataset_csv.csv"
+    dataset_path = r"C:\Users\User\PycharmProjects\FP-GROWTH(Enhanced)_for_HUIs\generated_foodmart_dataset.csv"
     processor = DataProcessor(dataset_path)
 
     # load FoodMart Transactions
@@ -50,7 +50,7 @@ def main():
         return
 
     external_utility = processor.get_dummy_foodmart_item_utilities()
-    min_util = 100
+    min_util = 30
     epsilon = 1.0
 
     try:
@@ -70,12 +70,12 @@ def main():
 
         # adding new transactions using foodmart dataset
         new_transactions_batch = [
-            [(str(i), 1) for i in range(1, 4)],
-            [(str(i), 1) for i in range(2, 5)]
+            [(str(i), 1, external_utility.get(str(i), 10)) for i in range(1, 4)],
+            [(str(i), 1, external_utility.get(str(i), 10)) for i in range(2, 5)]
         ]
         print("\nAdding new transactions...")
-        root, header_table = incremental_fp_tree_update(root, header_table, new_transactions_batch,
-                                                        external_utility, min_util, sorted_items)
+        root, header_table = incremental_fp_tree_update(new_transactions_batch, root, header_table,
+                                                        sorted_items, min_util, external_utility)
 
         # Display updated results
         print("\nUpdated FP-Tree Structure:")

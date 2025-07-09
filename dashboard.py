@@ -438,7 +438,7 @@ class FederatedLearningDashboard:
         print(f"📊 Dashboard will be available at: http://{host}:{port}")
         print(f"🔄 Update interval: {self.update_interval}ms")
         
-        self.app.run_server(host=host, port=port, debug=debug)
+        self.app.run(host=host, port=port, debug=debug)
         
     def stop(self):
         """Stop the dashboard"""

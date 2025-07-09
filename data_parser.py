@@ -17,19 +17,31 @@ class DataProcessor:
         item_id1 item_id2 ... item_idN:utility1 utility2 ... utilityN:quantity1 quantity2 ... quantityN
         Returns a list of (item_id, quantity, utility) tuples.
         """
+        # Clean the line and remove quotes
         cleaned_line = line.strip().strip('"')
+        
+        # Remove any line breaks within the string
+        cleaned_line = cleaned_line.replace('\n', ' ').replace('\r', ' ')
+        
         if ':' not in cleaned_line:
-            print(f"Warning: No utility/quantity info in line: {line}")
+            print(f"Warning: No utility/quantity info in line: {line[:100]}...")
             return []
 
         try:
-            items_part, utilities_part, quantities_part = cleaned_line.split(':')
-            item_ids = items_part.strip().split()
-            utilities = [float(u) for u in utilities_part.strip().split()]
-            quantities = [int(q) for q in quantities_part.strip().split()]
+            parts = cleaned_line.split(':')
+            if len(parts) != 3:
+                print(f"Warning: Expected 3 parts (items:utilities:quantities), got {len(parts)} in line: {line[:100]}...")
+                return []
+                
+            items_part, utilities_part, quantities_part = parts
+            
+            # Clean and split each part
+            item_ids = [item.strip() for item in items_part.strip().split() if item.strip()]
+            utilities = [float(u.strip()) for u in utilities_part.strip().split() if u.strip()]
+            quantities = [int(q.strip()) for q in quantities_part.strip().split() if q.strip()]
 
             if len(item_ids) != len(quantities) or len(item_ids) != len(utilities):
-                print(f"Warning: Mismatch between items, utilities, and quantities in line: {line}")
+                print(f"Warning: Mismatch between items ({len(item_ids)}), utilities ({len(utilities)}), and quantities ({len(quantities)}) in line: {line[:100]}...")
                 return []
 
             transaction_item_tuples = []
@@ -38,7 +50,7 @@ class DataProcessor:
 
             return transaction_item_tuples
         except Exception as e:
-            print(f"Error parsing line: {line}\n{e}")
+            print(f"Error parsing line: {line[:100]}...\n{e}")
             return []
 
     def load_foodmart_transactions_as_tuple(self):

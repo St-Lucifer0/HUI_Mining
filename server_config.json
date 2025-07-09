@@ -1,0 +1,9 @@
+{
+  "host": "0.0.0.0",
+  "port": 50051,
+  "min_utility_threshold": 50,
+  "epsilon": 1.0,
+  "num_rounds": 3,
+  "max_clients": 10,
+  "timeout_seconds": 300
+}
