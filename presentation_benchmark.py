@@ -240,7 +240,7 @@ def quick_performance_check():
     try:
         start_time = time.time()
         from data_parser import DataProcessor
-        processor = DataProcessor("foodmart_dataset_csv.csv")
+        processor = DataProcessor("generated_foodmart_dataset.csv")
         transactions = processor.load_foodmart_transactions_as_tuple()
         load_time = time.time() - start_time
         
