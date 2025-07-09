@@ -278,30 +278,37 @@ class FederatedErrorHandler:
             'last_error': self.error_history[-1] if self.error_history else None
         }
 
+
 # Global error handler instance
 error_handler = FederatedErrorHandler()
+
 
 # Convenience functions
 def log_operation(operation: str, details: Dict[str, Any] = None):
     """Log an operation"""
     error_handler.log_operation(operation, details)
 
+
 def log_error(error: Exception, context: str = "", recovery_action: str = ""):
     """Log an error"""
     error_handler.log_error(error, context, recovery_action)
+
 
 def handle_errors(context: str = "", recovery_action: str = ""):
     """Error handling decorator"""
     return error_handler.error_handler(context, recovery_action)
 
+
 def monitor_performance(operation: str):
     """Performance monitoring decorator"""
     return error_handler.performance_monitor(operation)
+
 
 def retry_operation(max_attempts: int = 3, delay: float = 1.0, 
                    backoff_factor: float = 2.0, exceptions: tuple = (Exception,)):
     """Retry operation decorator"""
     return error_handler.retry_on_error(max_attempts, delay, backoff_factor, exceptions)
+
 
 # Example usage
 if __name__ == "__main__":

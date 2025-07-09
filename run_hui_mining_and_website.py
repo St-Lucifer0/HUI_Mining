@@ -28,7 +28,7 @@ def run_hui_mining_and_create_website():
     print("=" * 60)
     
     # Initialize DataProcessor with FoodMart dataset path
-    dataset_path = "foodmart_dataset_csv.csv"
+    dataset_path = "generated_foodmart_dataset.csv"
     processor = DataProcessor(dataset_path)
 
     # Load FoodMart Transactions
@@ -42,32 +42,73 @@ def run_hui_mining_and_create_website():
     print(f"✅ Loaded {len(transactions)} transactions")
 
     # Get utilities and set parameters
-    external_utility = processor.get_dummy_foodmart_item_utilities()
-    min_util = 100
+    # external_utility = processor.get_dummy_foodmart_item_utilities()  # No longer needed
+    min_util = 30  # Lowered from 50 to 30 for more frequent high-utility itemsets
     epsilon = 1.0
 
     try:
         # Prune low-utility items
         print("\n🔍 Pruning low-utility items...")
-        sorted_items = construct_pruned_item_list(transactions, min_util, external_utility)
+        sorted_items = construct_pruned_item_list(transactions, min_util, None) # Pass None for external_utility
         print(f"✅ High-Utility items (sorted by TWU): {len(sorted_items)} items")
 
         # Construct initial FP-Tree
         print("\n🌳 Constructing HUIM FP-Tree...")
-        root, header_table = construct_huim_fp_tree(transactions, sorted_items, external_utility)
+        root, header_table = construct_huim_fp_tree(transactions, sorted_items, None) # Pass None for external_utility
         print("✅ FP-Tree constructed successfully")
 
         # Mine high-utility itemsets
         print("\n⛏️ Mining High-Utility Itemsets...")
-        miner = HUIMiner(external_utility, min_util)
+        miner = HUIMiner(None, min_util) # Pass None for external_utility
         high_utility_itemsets = miner.mine_huis_pseudo_projection(header_table, root)
         print(f"✅ Found {len(high_utility_itemsets)} high-utility itemsets")
 
+        # DEBUG: Print first 5 itemsets and transactions to check types/values
+        print("\nDEBUG: First 5 mined itemsets:")
+        for idx, itemset in enumerate(list(high_utility_itemsets)[:5]):
+            print(f"Itemset {idx+1}: {itemset} (type: {type(itemset)})")
+            if isinstance(itemset, (set, frozenset, list, tuple)):
+                for item in itemset:
+                    print(f"  - {item} (type: {type(item)})")
+        print("\nDEBUG: First 5 transactions (item IDs):")
+        for idx, tx in enumerate(transactions[:5]):
+            tx_items = [x[0] for x in tx]
+            print(f"Transaction {idx+1}: {tx_items} (types: {[type(x[0]) for x in tx]})")
+
+        # Print a few example transactions for reference
+        print("\nExample transactions (first 5):")
+        for idx, tx in enumerate(transactions[:5]):
+            print(f"Transaction {idx+1}: {[x[0] for x in tx]}")
+
+        # Filter itemsets to only include those with size 2 or 3
+        min_size = 2
+        max_size = 3
+        high_utility_itemsets = [iset for iset in high_utility_itemsets if min_size <= len(iset) <= max_size]
+        print(f"\nFiltered to {len(high_utility_itemsets)} itemsets of size {min_size} to {max_size}.")
+
+        # Create item utilities dictionary from transaction data
+        print(f"\n🔒 Creating item utilities dictionary for privacy-preserving mining...")
+        item_utils_dict = {}
+        for tx in transactions:
+            for item_id, _, utility in tx:
+                if item_id not in item_utils_dict:
+                    item_utils_dict[item_id] = 0
+                item_utils_dict[item_id] += utility
+        
+        # Convert transactions to format expected by privacy wrapper: [{'item': count}, ...]
+        print(f"\n🔒 Converting transactions to privacy wrapper format...")
+        privacy_transactions = []
+        for tx in transactions:
+            tx_dict = {}
+            for item_id, quantity, _ in tx:
+                tx_dict[item_id] = quantity
+            privacy_transactions.append(tx_dict)
+        
         # Privacy-preserving mining
         print(f"\n🔒 Running Privacy-Preserving HUI Mining...")
         privacy_itemsets = PrivacyPreservingHUIMining.privacy_preserving_hui_mining_algorithm8(
-            transactions_list=transactions,
-            item_utils_dict=external_utility,
+            transactions_list=privacy_transactions,
+            item_utils_dict=item_utils_dict,
             minutil_threshold=min_util,
             epsilon=epsilon,
             num_mpc_workers=3
@@ -80,14 +121,24 @@ def run_hui_mining_and_create_website():
         # Convert itemsets to the format expected by output formatter
         formatted_itemsets = []
         for itemset in high_utility_itemsets:
-            if isinstance(itemset, (list, tuple)):
-                items = list(itemset)
-            else:
-                items = [str(itemset)]
+            items = list(itemset)
+            # Calculate actual utility and support for this itemset using real utility from data
+            utility = 0
+            support_count = 0
             
-            # Calculate utility and support
-            utility = sum(external_utility.get(item, 0) for item in items)
-            support = len([tx for tx in transactions if all(item in [x[0] for x in tx] for item in items)]) / len(transactions)
+            for tx in transactions:
+                tx_items = [x[0] for x in tx]  # Get item IDs from transaction
+                tx_utilities = {x[0]: x[2] for x in tx}  # Get utility from transaction
+                print(f"Checking itemset: {items} in transaction: {tx_items}")
+                # Check if all items in itemset are present in transaction
+                if all(item in tx_items for item in items):
+                    print(f"MATCH FOUND for itemset {items} in transaction {tx_items}")
+                    support_count += 1
+                    # Calculate utility for this transaction (sum the utility field for each item in the itemset)
+                    for item in items:
+                        utility += tx_utilities.get(item, 0)
+            
+            support = support_count / len(transactions) if transactions else 0
             
             formatted_itemsets.append({
                 'itemset': set(items),

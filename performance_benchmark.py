@@ -26,22 +26,28 @@ class PerformanceBenchmark:
         self.start_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
         print(f"🔄 Starting benchmark: {test_name}")
         
-    def end_benchmark(self, test_name: str, additional_metrics: Dict = None):
+    def end_benchmark(self, test_name: str, additional_metrics=None):
         """End timing and record results"""
         end_time = time.time()
         end_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
-        
+
+        # Ensure start_time and start_memory are set
+        if self.start_time is None:
+            self.start_time = end_time
+        if self.start_memory is None:
+            self.start_memory = end_memory
+
         duration = end_time - self.start_time
         memory_used = end_memory - self.start_memory
-        
+
         self.results[test_name] = {
             'duration_seconds': duration,
             'memory_mb': memory_used,
             'peak_memory_mb': end_memory,
             'timestamp': datetime.now().isoformat(),
-            **additional_metrics or {}
+            **(additional_metrics or {})
         }
-        
+
         print(f"✅ {test_name}: {duration:.2f}s, Memory: {memory_used:.2f}MB")
         
     def benchmark_single_mining(self, dataset_size: int = 1000):
@@ -148,22 +154,21 @@ class PerformanceBenchmark:
             
     def generate_report(self, output_file: str = "performance_report.json"):
         """Generate comprehensive performance report"""
+        import sys
         report = {
             'benchmark_info': {
                 'timestamp': datetime.now().isoformat(),
                 'system_info': {
                     'cpu_count': psutil.cpu_count(),
                     'total_memory_gb': psutil.virtual_memory().total / 1024 / 1024 / 1024,
-                    'python_version': os.sys.version
+                    'python_version': sys.version
                 }
             },
             'results': self.results,
             'summary': self._generate_summary()
         }
-        
         with open(output_file, 'w') as f:
             json.dump(report, f, indent=2)
-            
         print(f"📊 Performance report saved to: {output_file}")
         return report
         

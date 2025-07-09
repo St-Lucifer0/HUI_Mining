@@ -182,14 +182,20 @@ class FederatedLearningDashboard:
                 # Collect system metrics
                 cpu_percent = psutil.cpu_percent()
                 memory = psutil.virtual_memory()
-                disk = psutil.disk_usage('/')
+                
+                # Handle disk usage for Windows
+                try:
+                    disk = psutil.disk_usage('C:\\')
+                    disk_percent = disk.percent
+                except:
+                    disk_percent = 0  # Default if disk usage fails
                 
                 system_metric = {
                     'timestamp': datetime.now(),
                     'cpu_percent': cpu_percent,
                     'memory_percent': memory.percent,
                     'memory_used_gb': memory.used / 1024 / 1024 / 1024,
-                    'disk_percent': disk.percent
+                    'disk_percent': disk_percent
                 }
                 
                 self.system_metrics.append(system_metric)

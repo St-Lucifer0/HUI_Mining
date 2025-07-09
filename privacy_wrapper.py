@@ -5,9 +5,9 @@ class PrivacyPreservingHUIMining:
     @staticmethod
     def privacy_preserving_hui_mining_algorithm8(
         transactions_list,    # List of plaintext transactions, e.g., [{'item': count}, ...]
-        item_utils_dict,      # Plaintext item utilities, e.g., {'item': utility_value}
-        minutil_threshold,    # Plaintext minimum utility threshold
-        epsilon,              # Differential privacy budget (float)
+        item_utils_dict=None,      # Plaintext item utilities, e.g., {'item': utility_value}
+        minutil_threshold=0,    # Plaintext minimum utility threshold
+        epsilon=1.0,              # Differential privacy budget (float)
         num_mpc_workers=3     # Number of virtual workers for MPC simulation
     ):
         """
@@ -50,10 +50,11 @@ class PrivacyPreservingHUIMining:
         for i, tx in enumerate(transactions_list):
             if not tx:
                 continue
-            if isinstance(tx[0], tuple):
-                tx_dict = dict(tx)
-            else:
+            if isinstance(tx, dict):
                 tx_dict = tx
+            else:
+                # tx is a list of (item, quantity, utility) tuples
+                tx_dict = dict((item, quantity) for item, quantity, _ in tx)
 
             if not isinstance(tx_dict, dict):
                 raise ValueError(f"Transaction {i} must be convertible to a dictionary, got {type(tx_dict)}")
@@ -76,10 +77,10 @@ class PrivacyPreservingHUIMining:
         for tx in transactions_list:
             if not tx:
                 continue
-            if isinstance(tx[0], tuple):
-                items = [item for item, _ in tx]
-            else:
+            if isinstance(tx, dict):
                 items = list(tx.keys())
+            else:
+                items = [item for item, _, _ in tx]
 
             all_items_in_dataset.update(items)
         all_items_in_dataset = list(all_items_in_dataset)
@@ -93,7 +94,7 @@ class PrivacyPreservingHUIMining:
         max_tx_utility_for_sensitivity = 0
         if transactions_list:
             max_tx_utility_for_sensitivity = max(
-                sum(count * item_utils_dict.get(item, 0) for item, count in tx)
+                sum(count * item_utils_dict.get(item, 0) for item, count in tx.items())
                 for tx in transactions_list if tx
             )
         print(f" Sensitivity for TWU (max transaction utility): {max_tx_utility_for_sensitivity}")

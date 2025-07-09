@@ -102,7 +102,7 @@ class PerformanceMonitor:
             'memory_history': self.memory_history,
             'cpu_history': self.cpu_history,
             'timestamps': self.timestamps,
-            **additional_metrics or {}
+            **(additional_metrics or {})
         }
         
         self._print_summary(results)

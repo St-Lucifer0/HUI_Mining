@@ -13,44 +13,38 @@ class DataProcessor:
 
     def parse_foodmart_transaction_line(self, line):
         """
-        Parses a single line from the dataset.
-        Line format: "item1 item2 itemLastBeforeUtil: TotalUtil: SumProfits item4 item5"
-        Returns a list of (item_id_str, quantity) tuples. Quantity is assumed 1.
-        The utility block is currently ignored for item extraction.
+        Parses a line in the format:
+        item_id1 item_id2 ... item_idN:utility1 utility2 ... utilityN:quantity1 quantity2 ... quantityN
+        Returns a list of (item_id, quantity, utility) tuples.
         """
         cleaned_line = line.strip().strip('"')
-        parts = cleaned_line.split(' ')
-        transaction_item_tuples = []
-        items_seen_in_this_line = set()
+        if ':' not in cleaned_line:
+            print(f"Warning: No utility/quantity info in line: {line}")
+            return []
 
-        for part in parts:
-            try:
-                if ':' in part:
-                    # Handle items before the utility block separator
-                    item_before_util = part.split(':')[0]
-                    if item_before_util:
-                        item_id_int = int(item_before_util)
-                        item_id_str = str(item_id_int)
-                        if item_id_str not in items_seen_in_this_line:
-                            transaction_item_tuples.append((item_id_str, 1))
-                            items_seen_in_this_line.add(item_id_str)
-                else:
-                    # Handle regular items (before or after utility block)
-                    item_id_int = int(part)
-                    item_id_str = str(item_id_int)
-                    if item_id_str not in items_seen_in_this_line:
-                        transaction_item_tuples.append((item_id_str, 1))
-                        items_seen_in_this_line.add(item_id_str)
-            except ValueError:
-                if part and ':' not in part:  # Avoid warning for utility parts
-                    print(f"Warning (parse_foodmart_transaction_line): Could not parse item: {part} in line: {line}")
+        try:
+            items_part, utilities_part, quantities_part = cleaned_line.split(':')
+            item_ids = items_part.strip().split()
+            utilities = [float(u) for u in utilities_part.strip().split()]
+            quantities = [int(q) for q in quantities_part.strip().split()]
 
-        return transaction_item_tuples
+            if len(item_ids) != len(quantities) or len(item_ids) != len(utilities):
+                print(f"Warning: Mismatch between items, utilities, and quantities in line: {line}")
+                return []
+
+            transaction_item_tuples = []
+            for item_id, quantity, utility in zip(item_ids, quantities, utilities):
+                transaction_item_tuples.append((item_id, quantity, utility))
+
+            return transaction_item_tuples
+        except Exception as e:
+            print(f"Error parsing line: {line}\n{e}")
+            return []
 
     def load_foodmart_transactions_as_tuple(self):
         """
         Loads transactions from a FoodMart-formatted file.
-        Each transaction will be a list of (item_id_str, quantity) tuples.
+        Each transaction will be a list of (item_id_str, quantity, utility) tuples.
         """
         self.transactions = []
         try:
@@ -79,7 +73,7 @@ class DataProcessor:
         print("\nGenerating DUMMY item utilities. ")
         all_items = set()
         for tx_tuples in self.transactions:
-            for item_id_str, _ in tx_tuples:
+            for item_id_str, _, _ in tx_tuples:
                 all_items.add(item_id_str)
 
         self.external_utility = {item: random.randint(20, 100) for item in all_items}

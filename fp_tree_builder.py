@@ -2,13 +2,24 @@
 from fp_node import UtilityFPNode
 
 
-def construct_huim_fp_tree(transaction_database, sorted_items, external_utility):
+def construct_huim_fp_tree(transactions, sorted_items, external_utility=None):
+    """
+    Construct the HUIM FP-Tree. If external_utility is None, build it from transactions using the real utility values.
+    """
+    if external_utility is None:
+        external_utility = {}
+        for tx in transactions:
+            for item_id, _, utility in tx:
+                if item_id not in external_utility:
+                    external_utility[item_id] = 0
+                external_utility[item_id] += utility
+
     # Initialize a root variable to store the class UtilityFPNode
     # And a header table
 
     # Input Validation
-    if not isinstance(transaction_database, list):
-        raise ValueError("transaction_database must be a list")
+    if not isinstance(transactions, list):
+        raise ValueError("transactions must be a list")
     if not isinstance(sorted_items, list):
         raise ValueError("sorted_items must be a list")
     if not isinstance(external_utility, dict):
@@ -19,11 +30,11 @@ def construct_huim_fp_tree(transaction_database, sorted_items, external_utility)
     header_table = {}
 
     # process each transaction
-    for transaction in transaction_database:
+    for transaction in transactions:
         if not isinstance(transaction, list):
-            raise ValueError("Each transaction must be a list of (item, quantity) tuples")
-        # get item quantities
-        item_quantities = {item: quantity for item, quantity in transaction}
+            raise ValueError("Each transaction must be a list of (item, quantity, utility) tuples")
+        # get item quantities - transactions are (item_id, quantity, utility) tuples
+        item_quantities = {item: quantity for item, quantity, _ in transaction}
 
         # filter and sort items by twu order
         trans_sorted_items = [item for item in sorted_items if item in item_quantities]

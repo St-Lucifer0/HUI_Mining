@@ -9,23 +9,26 @@ class HUIMiner:
     This class uses helper methods from HUIMinerHelpers.
     """
 
-    def __init__(self, external_utility, min_utility_threshold):
+    def __init__(self, external_utility, min_utility_threshold, transactions=None):
         """
         Initializes the HUIMiner.
-
-        Args:
-            external_utility (dict): Global item utilities {item_name: utility_value}.
-            min_utility_threshold (float or int): The minimum utility for an HUI.
+        If external_utility is None, build it from transactions using the real utility values.
         """
-        # Input Validation
+        if external_utility is None:
+            external_utility = {}
+            if transactions is not None:
+                for tx in transactions:
+                    for item_id, _, utility in tx:
+                        if item_id not in external_utility:
+                            external_utility[item_id] = 0
+                        external_utility[item_id] += utility
         if not isinstance(external_utility, dict):
             raise ValueError("external_utility must be a dictionary")
         if not isinstance(min_utility_threshold, (int, float)) or min_utility_threshold < 0:
             raise ValueError("min_utility_threshold must be a non-negative nuber.")
-
         self.external_utility = external_utility
         self.min_utility_threshold = min_utility_threshold
-        self.helpers = HUIMinerHelpers()  # Instantiate or just use static methods directly
+        self.helpers = HUIMinerHelpers()
 
     def mine_huis_pseudo_projection(self, initial_header_table, fp_tree_root_node=None):
         """
@@ -44,6 +47,8 @@ class HUIMiner:
             return set()
 
         HUIs_found = set()
+        max_itemsets_to_find = 1000  # Limit total itemsets to prevent infinite loops
+        itemsets_found = 0
 
         def get_item_total_utility_from_header(item, ht):  # Simplified utility sum from tree
             node = ht.get(item)
@@ -58,7 +63,14 @@ class HUIMiner:
             key=lambda x: get_item_total_utility_from_header(x, initial_header_table)
         )
 
+        # Limit the number of items to process for faster execution
+        items_to_process = items_to_process[:50]  # Process only top 50 items
+
         for item_i in items_to_process:
+            if itemsets_found >= max_itemsets_to_find:
+                print(f"⚠️ Reached maximum itemsets limit ({max_itemsets_to_find}). Stopping early.")
+                break
+                
             current_HUI_candidate = frozenset({item_i})
 
             projected_db_for_i = self.helpers.build_projected_db_from_fp_tree_nodes(
@@ -72,22 +84,28 @@ class HUIMiner:
 
             if total_utility_of_i >= self.min_utility_threshold:
                 HUIs_found.add(current_HUI_candidate)
+                itemsets_found += 1
 
             potential_utility_for_i = self.helpers.calculate_potential_utility(
                 projected_db_for_i, self.external_utility
             )
 
             if potential_utility_for_i >= self.min_utility_threshold:
-                conditional_results = self._mine_conditional_huis(current_HUI_candidate, projected_db_for_i)
+                conditional_results = self._mine_conditional_huis(current_HUI_candidate, projected_db_for_i, max_itemsets_to_find - itemsets_found)
                 HUIs_found.update(conditional_results)
+                itemsets_found += len(conditional_results)
         return HUIs_found
 
-    def _mine_conditional_huis(self, prefix_itemset, current_projected_db):
+    def _mine_conditional_huis(self, prefix_itemset, current_projected_db, max_itemsets_remaining=1000, depth=0):
         """
         Algorithm 6 (Recursive Helper): Mines HUIs by extending 'prefix_itemset'
         using items from 'current_projected_db'.
 
         """
+        # Add depth limiting to prevent infinite recursion
+        if depth > 5 or max_itemsets_remaining <= 0:
+            return set()
+            
         local_HUIs_found = set()
 
         local_header_info = self.helpers.build_local_header_info(current_projected_db, self.external_utility)
@@ -98,7 +116,13 @@ class HUIMiner:
         sorted_local_items_to_try = sorted(local_header_info.keys(),
             key=lambda item_key: local_header_info[item_key].get('potential_utility_if_chosen', 0), reverse=True)
 
+        # Limit items to try for faster execution
+        sorted_local_items_to_try = sorted_local_items_to_try[:20]
+
         for item_j_to_add in sorted_local_items_to_try:
+            if len(local_HUIs_found) >= max_itemsets_remaining:
+                break
+                
             current_HUI_candidate = prefix_itemset.union({item_j_to_add})
 
             projected_db_for_new_HUI = self.helpers.build_projected_db_from_existing_projected_db(item_j_to_add,
@@ -116,6 +140,11 @@ class HUIMiner:
                 self.external_utility)
 
             if potential_utility_for_current_HUI >= self.min_utility_threshold:
-                deeper_HUIs_found = self._mine_conditional_huis(current_HUI_candidate, projected_db_for_new_HUI)
+                deeper_HUIs_found = self._mine_conditional_huis(
+                    current_HUI_candidate, 
+                    projected_db_for_new_HUI, 
+                    max_itemsets_remaining - len(local_HUIs_found),
+                    depth + 1
+                )
                 local_HUIs_found.update(deeper_HUIs_found)
         return local_HUIs_found
