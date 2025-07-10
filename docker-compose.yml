@@ -11,8 +11,10 @@ services:
       - "50051:50051"
     environment:
       - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
     volumes:
       - ./logs:/app/logs
+      - ./results:/app/results
     networks:
       - federated-network
     restart: unless-stopped

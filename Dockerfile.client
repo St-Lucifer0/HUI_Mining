@@ -23,6 +23,9 @@ RUN python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. federated
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 
+# Create logs directory
+RUN mkdir -p /app/logs
+
 # Create a script to run the client
 RUN echo '#!/bin/bash\n\
 if [ -z "$CLIENT_ID" ]; then\n\

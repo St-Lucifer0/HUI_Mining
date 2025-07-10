@@ -144,14 +144,14 @@ class FederatedLearningClient:
     
     def _load_sample_data(self):
         """Load sample data for testing"""
-        # Sample transaction database
+        # Sample transaction database with (item_id, quantity, utility) format
         self.transactions = [
-            [("rice", 2), ("egg", 1), ("sugar", 1)],
-            [("rice", 1), ("sugar", 3)],
-            [("egg", 2), ("sugar", 2)],
-            [("rice", 3), ("egg", 1)],
-            [("milk", 2), ("bread", 1)],
-            [("milk", 1), ("bread", 2), ("butter", 1)]
+            [("rice", 2, 10), ("egg", 1, 6), ("sugar", 1, 4)],
+            [("rice", 1, 5), ("sugar", 3, 12)],
+            [("egg", 2, 12), ("sugar", 2, 8)],
+            [("rice", 3, 15), ("egg", 1, 6)],
+            [("milk", 2, 8), ("bread", 1, 3)],
+            [("milk", 1, 4), ("bread", 2, 6), ("butter", 1, 6)]
         ]
         
         # Sample external utilities
@@ -226,7 +226,8 @@ class FederatedLearningClient:
             transactions_list = []
             for tx in self.transactions:
                 if isinstance(tx[0], tuple):
-                    tx_dict = dict(tx)
+                    # Convert (item, quantity, utility) tuples to {item: quantity} format
+                    tx_dict = {item: quantity for item, quantity, _ in tx}
                 else:
                     tx_dict = tx
                 transactions_list.append(tx_dict)
