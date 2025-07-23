@@ -1,0 +1,23 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "api_port": 5000,
+    "federated_port": 50051,
+    "max_clients": 10,
+    "timeout": 300
+  },
+  "client": {
+    "reconnect_interval": 5,
+    "heartbeat_interval": 30,
+    "max_retries": 3
+  },
+  "mining": {
+    "default_threshold": 100,
+    "privacy_epsilon": 1.0,
+    "num_rounds": 3
+  },
+  "ui": {
+    "auto_open_browser": true,
+    "theme": "dark"
+  }
+}

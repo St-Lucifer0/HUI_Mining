@@ -1,237 +1,406 @@
-# Network Setup Guide for 3-Laptop Federated Learning
+# 🌐 Network Setup Guide for Multi-Laptop FP-Growth Federated Learning
 
-This guide will help you set up your three laptops for federated learning.
+## Overview
 
-## 📋 Prerequisites
+This guide explains how to set up a multi-laptop federated learning system where one laptop acts as a server and other laptops connect as clients to run their datasets collaboratively.
 
-- All three laptops must have Python 3.9+ installed
-- All laptops must be on the same network (WiFi or Ethernet)
-- Firewall settings must allow connections on port 50051
+## 🖥️ Server Setup (Laptop 1)
 
-## 🖥️ Laptop Configuration
+### 1. **Network Configuration**
 
-### **Laptop 1 (Server)**
-- **Role**: Federated Learning Server
-- **IP**: Will be determined automatically
-- **Port**: 50051
-
-### **Laptop 2 (Client 1)**
-- **Role**: Federated Learning Client
-- **Client ID**: client-1
-- **Connects to**: Laptop 1
-
-### **Laptop 3 (Client 2)**
-- **Role**: Federated Learning Client
-- **Client ID**: client-2
-- **Connects to**: Laptop 1
-
-## 🔧 Step-by-Step Setup
-
-### **Step 1: Prepare All Laptops**
-
-1. **Copy the entire project folder** to all three laptops
-2. **Ensure all laptops are on the same network**
-3. **Check network connectivity** between laptops
-
-### **Step 2: Setup Server (Laptop 1)**
-
-1. **Open Command Prompt/Terminal** on Laptop 1
-2. **Navigate to the project folder**
-3. **Run the server setup**:
-
-```bash
-# Setup and start server
-python setup_server.py
-
-# Or setup only (then start manually)
-python setup_server.py --setup-only
-```
-
-4. **Note the server IP address** that appears in the output
-5. **Keep the server running** (don't close the terminal)
-
-### **Step 3: Setup Client 1 (Laptop 2)**
-
-1. **Open Command Prompt/Terminal** on Laptop 2
-2. **Navigate to the project folder**
-3. **Run the client setup**:
-
-```bash
-# Replace SERVER_IP with the IP from Laptop 1
-python setup_client.py --client-id client-1 --server-address SERVER_IP
-
-# If you have a dataset:
-python setup_client.py --client-id client-1 --server-address SERVER_IP --dataset-path /path/to/dataset.csv
-```
-
-### **Step 4: Setup Client 2 (Laptop 3)**
-
-1. **Open Command Prompt/Terminal** on Laptop 3
-2. **Navigate to the project folder**
-3. **Run the client setup**:
-
-```bash
-# Replace SERVER_IP with the IP from Laptop 1
-python setup_client.py --client-id client-2 --server-address SERVER_IP
-
-# If you have a dataset:
-python setup_client.py --client-id client-2 --server-address SERVER_IP --dataset-path /path/to/dataset.csv
-```
-
-## 🌐 Network Troubleshooting
-
-### **Finding Server IP Address**
-
-On Laptop 1 (Server), run:
+#### Find Your IP Address
 ```bash
 # Windows
 ipconfig
 
-# Look for IPv4 Address under your network adapter
-# Example: 192.168.1.100
+# Look for your local IP address (usually 192.168.x.x or 10.x.x.x)
+# Example: IPv4 Address. . . . . . . . . . . : 192.168.1.100
 ```
 
-### **Testing Network Connectivity**
+#### Configure Firewall
+1. **Windows Firewall:**
+   - Open Windows Defender Firewall
+   - Click "Allow an app or feature through Windows Defender Firewall"
+   - Add Python and allow it on both Private and Public networks
+   - Or temporarily disable firewall for testing
 
-From any client laptop, test connection:
+2. **Port Configuration:**
+   - **API Server:** Port 5000 (HTTP)
+   - **Federated Server:** Port 50051 (gRPC)
+   - **WebSocket:** Port 5000 (same as API)
+
+### 2. **Start the Server**
+
+#### Option A: Using Batch File (Recommended)
 ```bash
-# Test basic connectivity
-ping SERVER_IP
-
-# Test specific port
-telnet SERVER_IP 50051
+# Run the integrated server batch file
+start_integrated_server.bat
 ```
 
-### **Firewall Configuration**
-
-#### **Windows Firewall**
-1. Open Windows Defender Firewall
-2. Click "Allow an app or feature through Windows Defender Firewall"
-3. Click "Change settings"
-4. Click "Allow another app"
-5. Browse to your Python executable
-6. Make sure both Private and Public are checked
-
-#### **Alternative: Allow Port 50051**
+#### Option B: Manual Start
 ```bash
-# Run as Administrator
-netsh advfirewall firewall add rule name="Federated Learning" dir=in action=allow protocol=TCP localport=50051
+# Start the integrated system in server mode
+python integrated_system.py --mode server --host 0.0.0.0 --api-port 5000 --federated-port 50051
 ```
 
-### **Common Network Issues**
+### 3. **Verify Server is Running**
 
-1. **"Connection refused"**
-   - Check if server is running
-   - Verify server IP address
-   - Check firewall settings
-
-2. **"No route to host"**
-   - Ensure all laptops are on same network
-   - Check WiFi/Ethernet connection
-   - Try pinging the server IP
-
-3. **"Timeout"**
-   - Check firewall settings
-   - Verify port 50051 is open
-   - Check network congestion
-
-## 🚀 Running the System
-
-### **Start Order**
-1. **Start Server first** (Laptop 1)
-2. **Start Client 1** (Laptop 2)
-3. **Start Client 2** (Laptop 3)
-
-### **Monitoring**
-
-#### **Server Monitoring (Laptop 1)**
+#### Check API Server
 ```bash
-# View server logs
-python run_federated_system.py logs federated-server
+# Test API health endpoint
+curl http://localhost:5000/api/health
 
-# Check server status
-python run_federated_system.py status
+# Expected response:
+{
+  "status": "healthy",
+  "mode": "server",
+  "timestamp": "2024-01-01T12:00:00",
+  "federated_server": true
+}
 ```
 
-#### **Client Monitoring**
-Each client will show its own logs in the terminal.
-
-### **Stopping the System**
-1. **Stop clients first** (Ctrl+C on client terminals)
-2. **Stop server** (Ctrl+C on server terminal)
-
-## 📊 Expected Behavior
-
-### **Server (Laptop 1)**
-- Shows "Federated Learning Server started"
-- Displays client registrations
-- Shows aggregation progress
-- Displays final results
-
-### **Clients (Laptops 2 & 3)**
-- Connect to server
-- Run local FP-Growth mining
-- Send results to server
-- Receive global aggregated results
-
-## 🔍 Troubleshooting Commands
-
-### **Test Server Connection**
+#### Check Federated Server
 ```bash
-python test_connection.py
+# Test gRPC server (if you have grpcurl installed)
+grpcurl -plaintext localhost:50051 list
+
+# Or use the test script
+python test_federated_system.py --server-only
 ```
 
-### **Check Dependencies**
+### 4. **Server Status Indicators**
+
+When the server is running correctly, you should see:
+- ✅ Flask API server running on port 5000
+- ✅ Federated learning server running on port 50051
+- ✅ Web interface accessible at `http://localhost:5000`
+- ✅ Browser automatically opens to the dashboard
+
+## 💻 Client Setup (Laptops 2, 3, 4...)
+
+### 1. **Network Connectivity**
+
+#### Test Connection to Server
 ```bash
-python -c "import grpc; print('gRPC OK')"
-python -c "import federated_learning_pb2; print('Protobuf OK')"
+# Test if you can reach the server
+ping 192.168.1.100  # Replace with server's IP address
+
+# Test API connectivity
+curl http://192.168.1.100:5000/api/health
+
+# Test gRPC connectivity (if grpcurl is available)
+grpcurl -plaintext 192.168.1.100:50051 list
 ```
 
-### **Manual Connection Test**
+#### Network Requirements
+- **Same Network:** All laptops must be on the same WiFi/LAN network
+- **No VPN:** Disable VPN connections that might block local traffic
+- **Firewall:** Allow Python through firewall on client laptops
+
+### 2. **Prepare Client Data**
+
+#### Option A: Use Sample Data
 ```bash
-python -c "import grpc; channel = grpc.insecure_channel('SERVER_IP:50051'); print('Connection successful')"
+# Generate sample dataset for this client
+python generate_dataset.py --client-id client-4 --output client4_dataset.csv
 ```
 
-## 📱 Alternative: Using Docker
+#### Option B: Use Your Own Data
+1. Prepare your CSV file with the following format:
+   ```csv
+   transaction_id,item1,item2,item3,utility1,utility2,utility3
+   1,laptop,mouse,keyboard,800,50,100
+   2,phone,charger,case,600,30,20
+   ```
 
-If you prefer Docker deployment:
+2. Place your CSV file in the project directory
 
-### **Server (Laptop 1)**
+### 3. **Start the Client**
+
+#### Option A: Using Batch File (Recommended)
 ```bash
-docker-compose up federated-server
+# Run the integrated client batch file
+start_integrated_client.bat
 ```
 
-### **Clients (Laptops 2 & 3)**
+#### Option B: Manual Start
 ```bash
-# Modify docker-compose.yml to point to server IP
-# Then run:
-docker-compose up client-1  # or client-2
+# Start the integrated system in client mode
+python integrated_system.py --mode client --client-id client-4 --server-address 192.168.1.100 --federated-port 50051
 ```
 
-## 🎯 Success Indicators
+### 4. **Client Configuration**
 
-- Server shows "Client registered successfully"
-- Clients show "Connected to server"
-- Server shows "Results received from client-X"
-- Final output shows aggregated high-utility itemsets
-- All laptops complete without errors
+#### Client ID Convention
+- **client-1:** Electronics Store (Server)
+- **client-2:** Fashion Store
+- **client-3:** Home & Garden Store
+- **client-4:** Your Store
+- **client-5:** Another Store
+- etc.
 
-## 📞 Getting Help
+#### Dataset Assignment
+Each client should have a unique dataset:
+- **client-4:** `client4_dataset.csv`
+- **client-5:** `client5_dataset.csv`
+- etc.
 
-If you encounter issues:
+## 🔧 Advanced Network Configuration
 
-1. **Check the logs** for error messages
-2. **Verify network connectivity**
-3. **Test with simple connection first**
-4. **Check firewall settings**
-5. **Ensure all dependencies are installed**
+### 1. **Static IP Setup (Recommended)**
 
-## 🔄 Next Steps
+#### On Server Laptop
+```bash
+# Windows - Set static IP
+# Control Panel > Network and Internet > Network Connections
+# Right-click WiFi > Properties > Internet Protocol Version 4 > Properties
+# Use the following IP address: 192.168.1.100
+# Subnet mask: 255.255.255.0
+# Default gateway: 192.168.1.1
+```
 
-Once the basic system is working:
+#### On Client Laptops
+```bash
+# Set static IPs for clients
+# Client 2: 192.168.1.101
+# Client 3: 192.168.1.102
+# Client 4: 192.168.1.103
+# etc.
+```
 
-1. **Add more clients** by copying the setup to additional laptops
-2. **Use real datasets** instead of sample data
-3. **Adjust privacy parameters** (epsilon values)
-4. **Monitor performance** and optimize settings
-5. **Scale the system** for larger datasets 
+### 2. **Port Forwarding (If Needed)**
+
+If laptops are on different networks:
+```bash
+# On router, forward ports to server laptop
+# Port 5000 -> 192.168.1.100:5000
+# Port 50051 -> 192.168.1.100:50051
+```
+
+### 3. **DNS Resolution**
+
+#### Create Hosts File Entries
+```bash
+# On each laptop, edit C:\Windows\System32\drivers\etc\hosts
+# Add: 192.168.1.100 federated-server
+```
+
+## 🧪 Testing the Multi-Laptop Setup
+
+### 1. **Server Dashboard Test**
+
+1. Open browser on server laptop: `http://localhost:5000`
+2. Switch to "Server View"
+3. Check "Federation Dashboard"
+4. You should see connected clients
+
+### 2. **Client Connection Test**
+
+#### Test Script
+```bash
+# Run on server laptop
+python test_federated_system.py --test-connections
+```
+
+#### Manual Test
+1. Start server on laptop 1
+2. Start client on laptop 2
+3. Check server dashboard for client connection
+4. Repeat for additional clients
+
+### 3. **Federated Learning Test**
+
+#### Start Mining on All Clients
+1. On each client laptop, open browser to `http://192.168.1.100:5000`
+2. Switch to "Client View"
+3. Go to "Mining Controls" tab
+4. Click "Start Mining"
+
+#### Monitor Progress
+1. On server laptop, check "Server View"
+2. Monitor federation status
+3. Check global patterns discovery
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+#### 1. **Connection Refused**
+```bash
+# Problem: Cannot connect to server
+# Solution: Check firewall settings and server IP address
+```
+
+#### 2. **Port Already in Use**
+```bash
+# Problem: Port 5000 or 50051 already in use
+# Solution: Kill existing processes or change ports
+netstat -ano | findstr :5000
+taskkill /PID <PID> /F
+```
+
+#### 3. **Client Not Appearing in Dashboard**
+```bash
+# Problem: Client connected but not visible
+# Solution: Check client registration and network connectivity
+```
+
+#### 4. **Mining Not Starting**
+```bash
+# Problem: Mining jobs not starting
+# Solution: Check dataset files and permissions
+```
+
+### Debug Commands
+
+#### Network Debugging
+```bash
+# Test network connectivity
+ping 192.168.1.100
+telnet 192.168.1.100 5000
+telnet 192.168.1.100 50051
+
+# Check open ports
+netstat -an | findstr :5000
+netstat -an | findstr :50051
+```
+
+#### Application Debugging
+```bash
+# Check server logs
+tail -f integrated_system.log
+
+# Test API endpoints
+curl -v http://192.168.1.100:5000/api/health
+
+# Test gRPC endpoints
+grpcurl -plaintext 192.168.1.100:50051 list
+```
+
+## 📊 Performance Optimization
+
+### 1. **Network Optimization**
+
+#### Bandwidth Considerations
+- **Dataset Size:** Keep individual datasets under 100MB
+- **Compression:** Enable gzip compression for API responses
+- **Batch Processing:** Process data in batches to reduce network overhead
+
+#### Latency Optimization
+- **Local Network:** Use wired connections when possible
+- **Server Location:** Place server laptop centrally
+- **Client Distribution:** Distribute clients evenly across network
+
+### 2. **Resource Management**
+
+#### Server Resources
+- **CPU:** Minimum 4 cores recommended
+- **RAM:** Minimum 8GB recommended
+- **Storage:** SSD preferred for faster I/O
+
+#### Client Resources
+- **CPU:** Minimum 2 cores per client
+- **RAM:** Minimum 4GB per client
+- **Network:** Stable WiFi or wired connection
+
+## 🔒 Security Considerations
+
+### 1. **Network Security**
+
+#### Local Network Security
+- **WiFi Password:** Use strong WiFi password
+- **Network Isolation:** Consider separate network for federated learning
+- **Firewall Rules:** Restrict access to necessary ports only
+
+#### Data Security
+- **Encryption:** All communication is encrypted via gRPC
+- **Privacy:** Client data never leaves the local machine
+- **Authentication:** Consider adding authentication for production use
+
+### 2. **Production Deployment**
+
+#### Additional Security Measures
+```bash
+# SSL/TLS certificates for HTTPS
+# API key authentication
+# Rate limiting
+# Input validation
+# Log monitoring
+```
+
+## 📈 Monitoring and Logging
+
+### 1. **Server Monitoring**
+
+#### Log Files
+- `integrated_system.log` - Main application logs
+- `federated_server.log` - Federated learning logs
+- `api_server.log` - API server logs
+
+#### Dashboard Metrics
+- Connected clients count
+- Federation round progress
+- Mining job status
+- Network latency
+
+### 2. **Client Monitoring**
+
+#### Health Checks
+- Regular heartbeat to server
+- Connection status monitoring
+- Local resource usage
+
+#### Performance Metrics
+- Mining execution time
+- Data processing speed
+- Network upload/download speeds
+
+## 🎯 Best Practices
+
+### 1. **Network Setup**
+- Use static IP addresses for stability
+- Test connectivity before starting federated learning
+- Monitor network performance during operation
+
+### 2. **Data Management**
+- Keep datasets reasonably sized
+- Use consistent data formats
+- Backup important datasets
+
+### 3. **System Administration**
+- Regular system updates
+- Monitor disk space and memory usage
+- Keep logs for troubleshooting
+
+### 4. **User Training**
+- Train users on basic troubleshooting
+- Document common procedures
+- Provide clear error messages
+
+---
+
+## 🚀 Quick Start Checklist
+
+### Server Setup (Laptop 1)
+- [ ] Find server IP address
+- [ ] Configure firewall
+- [ ] Run `start_integrated_server.bat`
+- [ ] Verify server is running
+- [ ] Test web interface
+
+### Client Setup (Laptops 2, 3, 4...)
+- [ ] Test network connectivity to server
+- [ ] Prepare client dataset
+- [ ] Run `start_integrated_client.bat`
+- [ ] Enter server IP and client ID
+- [ ] Verify client connection
+
+### Testing
+- [ ] Check server dashboard for clients
+- [ ] Start mining on all clients
+- [ ] Monitor federation progress
+- [ ] Verify global patterns discovery
+
+---
+
+**🎉 Congratulations!** Your multi-laptop federated learning system is now ready for collaborative high-utility itemset mining across multiple datasets. 

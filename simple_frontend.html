@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated HUIM System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 5px;
+        }
+        
+        .nav-tab {
+            padding: 12px 24px;
+            margin: 0 5px;
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .content-panel {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .content-panel.active {
+            display: block;
+        }
+        
+        .api-section {
+            margin-bottom: 30px;
+        }
+        
+        .api-section h3 {
+            margin-bottom: 15px;
+            color: #4fc3f7;
+        }
+        
+        .api-endpoint {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4fc3f7;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .method.get { background: #4caf50; }
+        .method.post { background: #ff9800; }
+        .method.put { background: #2196f3; }
+        .method.delete { background: #f44336; }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .status-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .status-card h4 {
+            margin-bottom: 10px;
+            color: #4fc3f7;
+        }
+        
+        .status-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .test-button {
+            background: linear-gradient(45deg, #4fc3f7, #29b6f6);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(79, 195, 247, 0.4);
+        }
+        
+        .response-area {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Federated HUIM System</h1>
+            <p>High Utility Itemset Mining - API Interface</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showPanel('overview')">Overview</button>
+            <button class="nav-tab" onclick="showPanel('api-test')">API Testing</button>
+            <button class="nav-tab" onclick="showPanel('clients')">Clients</button>
+            <button class="nav-tab" onclick="showPanel('federation')">Federation</button>
+        </div>
+        
+        <!-- Overview Panel -->
+        <div id="overview" class="content-panel active">
+            <h2>System Status</h2>
+            <div class="status-grid">
+                <div class="status-card">
+                    <h4>API Server</h4>
+                    <div class="status-value" id="api-status">🟢 Online</div>
+                    <p>Port 5000</p>
+                </div>
+                <div class="status-card">
+                    <h4>Active Clients</h4>
+                    <div class="status-value" id="client-count">3</div>
+                    <p>Connected</p>
+                </div>
+                <div class="status-card">
+                    <h4>Total Patterns</h4>
+                    <div class="status-value" id="pattern-count">56</div>
+                    <p>Discovered</p>
+                </div>
+                <div class="status-card">
+                    <h4>Federation Round</h4>
+                    <div class="status-value" id="round-count">15</div>
+                    <p>Current</p>
+                </div>
+            </div>
+            
+            <h3>Quick Actions</h3>
+            <button class="test-button" onclick="testApiHealth()">Test API Health</button>
+            <button class="test-button" onclick="getFederationStatus()">Get Federation Status</button>
+            <button class="test-button" onclick="getAllClients()">List All Clients</button>
+            
+            <div id="quick-response" class="response-area" style="display: none;"></div>
+        </div>
+        
+        <!-- API Testing Panel -->
+        <div id="api-test" class="content-panel">
+            <h2>API Endpoints</h2>
+            
+            <div class="api-section">
+                <h3>Client APIs</h3>
+                <div class="api-endpoint">
+                    <span class="method get">GET</span>
+                    <code>/api/clients/{clientId}/transactions</code>
+                    <button class="test-button" onclick="testEndpoint('GET', '/api/clients/client-1/transactions')">Test</button>
+                </div>
+                <div class="api-endpoint">
+                    <span class="method get">GET</span>
+                    <code>/api/clients/{clientId}/items</code>
+                    <button class="test-button" onclick="testEndpoint('GET', '/api/clients/client-1/items')">Test</button>
+                </div>
+                <div class="api-endpoint">
+                    <span class="method get">GET</span>
+                    <code>/api/clients/{clientId}/patterns</code>
+                    <button class="test-button" onclick="testEndpoint('GET', '/api/clients/client-1/patterns')">Test</button>
+                </div>
+                <div class="api-endpoint">
+                    <span class="method get">GET</span>
+                    <code>/api/clients/{clientId}/recommendations</code>
+                    <button class="test-button" onclick="testEndpoint('GET', '/api/clients/client-1/recommendations')">Test</button>
+                </div>
+            </div>
+            
+            <div class="api-section">
+                <h3>Federation APIs</h3>
+                <div class="api-endpoint">
+                    <span class="method get">GET</span>
+                    <code>/api/federation/status</code>
+                    <button class="test-button" onclick="testEndpoint('GET', '/api/federation/status')">Test</button>
+                </div>
+                <div class="api-endpoint">
+                    <span class="method get">GET</span>
+                    <code>/api/federation/clients</code>
+                    <button class="test-button" onclick="testEndpoint('GET', '/api/federation/clients')">Test</button>
+                </div>
+                <div class="api-endpoint">
+                    <span class="method get">GET</span>
+                    <code>/api/federation/patterns</code>
+                    <button class="test-button" onclick="testEndpoint('GET', '/api/federation/patterns')">Test</button>
+                </div>
+            </div>
+            
+            <div id="api-response" class="response-area" style="display: none;"></div>
+        </div>
+        
+        <!-- Clients Panel -->
+        <div id="clients" class="content-panel">
+            <h2>Client Management</h2>
+            <div id="clients-data">Loading client data...</div>
+        </div>
+        
+        <!-- Federation Panel -->
+        <div id="federation" class="content-panel">
+            <h2>Federation Dashboard</h2>
+            <div id="federation-data">Loading federation data...</div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        
+        function showPanel(panelId) {
+            // Hide all panels
+            document.querySelectorAll('.content-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected panel
+            document.getElementById(panelId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // Load data for specific panels
+            if (panelId === 'clients') {
+                loadClientsData();
+            } else if (panelId === 'federation') {
+                loadFederationData();
+            }
+        }
+        
+        async function testApiHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                showResponse('quick-response', data);
+                document.getElementById('api-status').textContent = '🟢 Online';
+            } catch (error) {
+                showResponse('quick-response', { error: 'API server is offline' });
+                document.getElementById('api-status').textContent = '🔴 Offline';
+            }
+        }
+        
+        async function getFederationStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/federation/status`);
+                const data = await response.json();
+                showResponse('quick-response', data);
+                if (data.success) {
+                    document.getElementById('round-count').textContent = data.data.round;
+                }
+            } catch (error) {
+                showResponse('quick-response', { error: error.message });
+            }
+        }
+        
+        async function getAllClients() {
+            try {
+                const response = await fetch(`${API_BASE}/federation/clients`);
+                const data = await response.json();
+                showResponse('quick-response', data);
+                if (data.success) {
+                    document.getElementById('client-count').textContent = data.data.length;
+                }
+            } catch (error) {
+                showResponse('quick-response', { error: error.message });
+            }
+        }
+        
+        async function testEndpoint(method, endpoint) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                const data = await response.json();
+                showResponse('api-response', data);
+            } catch (error) {
+                showResponse('api-response', { error: error.message });
+            }
+        }
+        
+        async function loadClientsData() {
+            try {
+                const response = await fetch(`${API_BASE}/federation/clients`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = '<div class="status-grid">';
+                    data.data.forEach(client => {
+                        html += `
+                            <div class="status-card">
+                                <h4>${client.name}</h4>
+                                <p><strong>Type:</strong> ${client.type}</p>
+                                <p><strong>Status:</strong> ${client.status}</p>
+                                <p><strong>Transactions:</strong> ${client.transactionCount}</p>
+                                <p><strong>Patterns:</strong> ${client.patterns}</p>
+                                <p><strong>Accuracy:</strong> ${(client.localAccuracy * 100).toFixed(1)}%</p>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    document.getElementById('clients-data').innerHTML = html;
+                } else {
+                    document.getElementById('clients-data').innerHTML = '<p>Error loading client data</p>';
+                }
+            } catch (error) {
+                document.getElementById('clients-data').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+        
+        async function loadFederationData() {
+            try {
+                const response = await fetch(`${API_BASE}/federation/status`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const status = data.data;
+                    const html = `
+                        <div class="status-grid">
+                            <div class="status-card">
+                                <h4>Current Round</h4>
+                                <div class="status-value">${status.round}</div>
+                            </div>
+                            <div class="status-card">
+                                <h4>Progress</h4>
+                                <div class="status-value">${(status.progress * 100).toFixed(1)}%</div>
+                            </div>
+                            <div class="status-card">
+                                <h4>Participating Clients</h4>
+                                <div class="status-value">${status.participatingClients}/${status.totalClients}</div>
+                            </div>
+                            <div class="status-card">
+                                <h4>Convergence</h4>
+                                <div class="status-value">${status.convergenceStatus}</div>
+                            </div>
+                        </div>
+                        <p><strong>ETA:</strong> ${status.eta}</p>
+                    `;
+                    document.getElementById('federation-data').innerHTML = html;
+                } else {
+                    document.getElementById('federation-data').innerHTML = '<p>Error loading federation data</p>';
+                }
+            } catch (error) {
+                document.getElementById('federation-data').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+        
+        function showResponse(elementId, data) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            testApiHealth();
+        });
+    </script>
+</body>
+</html>

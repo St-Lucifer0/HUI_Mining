@@ -67,8 +67,9 @@ class DataProcessor:
                         if parsed_tx_tuples:
                             self.transactions.append(parsed_tx_tuples)
             print(f"Loaded {len(self.transactions)} transactions from {self.dataset_path}")
-            if len(self.transactions) != 4141:
-                print(f"Warning: Expected 4141 transactions, but found {len(self.transactions)}")
+            # Updated expected transaction count for new dataset size
+            if len(self.transactions) != 4000:
+                print(f"Warning: Expected 4000 transactions, but found {len(self.transactions)}")
         except FileNotFoundError:
             print(f"Error: File not found at {self.dataset_path}")
             self.transactions = []

@@ -1,6 +1,7 @@
 # hui_miner_algorithms.py
 
 from hui_miner_helpers import HUIMinerHelpers
+from config import get_min_utility_threshold
 
 
 class HUIMiner:
@@ -9,10 +10,11 @@ class HUIMiner:
     This class uses helper methods from HUIMinerHelpers.
     """
 
-    def __init__(self, external_utility, min_utility_threshold, transactions=None):
+    def __init__(self, external_utility=None, min_utility_threshold=None, transactions=None):
         """
         Initializes the HUIMiner.
         If external_utility is None, build it from transactions using the real utility values.
+        If min_utility_threshold is None, use the global configuration value.
         """
         if external_utility is None:
             external_utility = {}
@@ -22,10 +24,17 @@ class HUIMiner:
                         if item_id not in external_utility:
                             external_utility[item_id] = 0
                         external_utility[item_id] += utility
+        
         if not isinstance(external_utility, dict):
             raise ValueError("external_utility must be a dictionary")
+        
+        # Use global config if threshold not provided
+        if min_utility_threshold is None:
+            min_utility_threshold = get_min_utility_threshold()
+        
         if not isinstance(min_utility_threshold, (int, float)) or min_utility_threshold < 0:
-            raise ValueError("min_utility_threshold must be a non-negative nuber.")
+            raise ValueError("min_utility_threshold must be a non-negative number.")
+        
         self.external_utility = external_utility
         self.min_utility_threshold = min_utility_threshold
         self.helpers = HUIMinerHelpers()
@@ -47,7 +56,7 @@ class HUIMiner:
             return set()
 
         HUIs_found = set()
-        max_itemsets_to_find = 1000  # Limit total itemsets to prevent infinite loops
+        # Remove artificial limit to allow proper threshold filtering
         itemsets_found = 0
 
         def get_item_total_utility_from_header(item, ht):  # Simplified utility sum from tree
@@ -67,9 +76,7 @@ class HUIMiner:
         items_to_process = items_to_process[:50]  # Process only top 50 items
 
         for item_i in items_to_process:
-            if itemsets_found >= max_itemsets_to_find:
-                print(f"⚠️ Reached maximum itemsets limit ({max_itemsets_to_find}). Stopping early.")
-                break
+            # Remove artificial limit check
                 
             current_HUI_candidate = frozenset({item_i})
 
@@ -91,19 +98,19 @@ class HUIMiner:
             )
 
             if potential_utility_for_i >= self.min_utility_threshold:
-                conditional_results = self._mine_conditional_huis(current_HUI_candidate, projected_db_for_i, max_itemsets_to_find - itemsets_found)
+                conditional_results = self._mine_conditional_huis(current_HUI_candidate, projected_db_for_i)
                 HUIs_found.update(conditional_results)
                 itemsets_found += len(conditional_results)
         return HUIs_found
 
-    def _mine_conditional_huis(self, prefix_itemset, current_projected_db, max_itemsets_remaining=1000, depth=0):
+    def _mine_conditional_huis(self, prefix_itemset, current_projected_db, depth=0):
         """
         Algorithm 6 (Recursive Helper): Mines HUIs by extending 'prefix_itemset'
         using items from 'current_projected_db'.
 
         """
         # Add depth limiting to prevent infinite recursion
-        if depth > 5 or max_itemsets_remaining <= 0:
+        if depth > 5:
             return set()
             
         local_HUIs_found = set()
@@ -120,8 +127,7 @@ class HUIMiner:
         sorted_local_items_to_try = sorted_local_items_to_try[:20]
 
         for item_j_to_add in sorted_local_items_to_try:
-            if len(local_HUIs_found) >= max_itemsets_remaining:
-                break
+            # Remove artificial limit check
                 
             current_HUI_candidate = prefix_itemset.union({item_j_to_add})
 
@@ -143,7 +149,6 @@ class HUIMiner:
                 deeper_HUIs_found = self._mine_conditional_huis(
                     current_HUI_candidate, 
                     projected_db_for_new_HUI, 
-                    max_itemsets_remaining - len(local_HUIs_found),
                     depth + 1
                 )
                 local_HUIs_found.update(deeper_HUIs_found)

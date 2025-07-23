@@ -101,6 +101,6 @@ def generate_client2_dataset(num_transactions=1200, output_file="client2_foodmar
     return output_file
 
 if __name__ == "__main__":
-    # Generate the dataset for Client 2
-    output_file = generate_client2_dataset(1200, "client2_foodmart_dataset.csv")
+    # Generate the dataset for Client 2 with 3500 transactions
+    output_file = generate_client2_dataset(3500, "client2_foodmart_dataset.csv")
     print(f"\nClient 2 dataset generated successfully: {output_file}") 

@@ -1,0 +1,21 @@
+{
+  "min_utility_threshold": 100,
+  "max_itemsets": 1000,
+  "enable_privacy": true,
+  "differential_privacy_epsilon": 1.0,
+  "federated_learning": {
+    "server_port": 50051,
+    "client_timeout": 30,
+    "max_clients": 10
+  },
+  "mining": {
+    "max_depth": 5,
+    "max_items_per_iteration": 50,
+    "enable_parallel": false
+  },
+  "ui": {
+    "dashboard_port": 8050,
+    "simple_ui_port": 5000,
+    "auto_refresh_interval": 5000
+  }
+}

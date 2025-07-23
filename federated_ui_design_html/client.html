@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUIM Client - Electronics Store</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Header -->
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="nav-left">
+                    <h1 class="logo">HUIM Client</h1>
+                    <span class="subtitle">Electronics Retail Store</span>
+                </div>
+                
+                <div class="client-status">
+                    <span class="status-dot active"></span>
+                    <span>Connected to Federation</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Client Interface -->
+        <div class="view-container active">
+            <div class="tab-navigation">
+                <button class="tab-btn active" onclick="switchTab('transactions')">
+                    <span class="icon">📊</span>
+                    Transactions
+                </button>
+                <button class="tab-btn" onclick="switchTab('catalog')">
+                    <span class="icon">📦</span>
+                    Item Catalog
+                </button>
+                <button class="tab-btn" onclick="switchTab('mining')">
+                    <span class="icon">⚙️</span>
+                    Mining Controls
+                </button>
+                <button class="tab-btn" onclick="switchTab('recommendations')">
+                    <span class="icon">🎯</span>
+                    Recommendations
+                </button>
+                <button class="tab-btn" onclick="switchTab('privacy')">
+                    <span class="icon">🔒</span>
+                    Privacy
+                </button>
+            </div>
+
+            <!-- All tab content from index.html client section -->
+            <!-- Transaction Management Tab -->
+            <div id="transactions-tab" class="tab-content active">
+                <!-- Same content as in index.html -->
+            </div>
+
+            <!-- Other tabs... -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

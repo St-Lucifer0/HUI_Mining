@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated HUIM System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Header -->
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="nav-left">
+                    <h1 class="logo">Federated HUIM</h1>
+                    <span class="subtitle">High Utility Itemset Mining System</span>
+                </div>
+                
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="switchView('client')">
+                        <span class="icon">💻</span>
+                        Client View
+                    </button>
+                    <button class="nav-tab" onclick="switchView('server')">
+                        <span class="icon">🖥️</span>
+                        Server View
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Client Interface -->
+        <div id="client-view" class="view-container active">
+            <div class="tab-navigation">
+                <button class="tab-btn active" onclick="switchTab('transactions')">
+                    <span class="icon">📊</span>
+                    Transactions
+                </button>
+                <button class="tab-btn" onclick="switchTab('catalog')">
+                    <span class="icon">📦</span>
+                    Item Catalog
+                </button>
+                <button class="tab-btn" onclick="switchTab('mining')">
+                    <span class="icon">⚙️</span>
+                    Mining Controls
+                </button>
+                <button class="tab-btn" onclick="switchTab('recommendations')">
+                    <span class="icon">🎯</span>
+                    Recommendations
+                </button>
+                <button class="tab-btn" onclick="switchTab('privacy')">
+                    <span class="icon">🔒</span>
+                    Privacy
+                </button>
+            </div>
+
+            <!-- Transaction Management Tab -->
+            <div id="transactions-tab" class="tab-content active">
+                <div class="content-header">
+                    <div>
+                        <h2>Transaction Management</h2>
+                        <p>Manage your transaction data for HUIM analysis</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary">
+                            <span class="icon">📤</span>
+                            Import CSV
+                        </button>
+                        <button class="btn btn-secondary">
+                            <span class="icon">📥</span>
+                            Export
+                        </button>
+                        <button class="btn btn-primary">
+                            <span class="icon">➕</span>
+                            Add Transaction
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Total Transactions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">Total Items</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$1,191</div>
+                        <div class="stat-label">Total Utility</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$397</div>
+                        <div class="stat-label">Avg Utility</div>
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="table-container">
+                    <h3>Recent Transactions</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Timestamp</th>
+                                <th>Items</th>
+                                <th>Total Utility</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>T1</td>
+                                <td>2024-01-15 10:30:00</td>
+                                <td>
+                                    <div class="item-list">
+                                        <div>Smartphone (×1) - $650</div>
+                                        <div>Phone Case (×1) - $25</div>
+                                        <div>Screen Protector (×1) - $15</div>
+                                    </div>
+                                </td>
+                                <td class="utility-value">$690</td>
+                                <td>
+                                    <button class="action-btn edit">✏️</button>
+                                    <button class="action-btn delete">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>T2</td>
+                                <td>2024-01-15 11:45:00</td>
+                                <td>
+                                    <div class="item-list">
+                                        <div>Summer Dress (×2) - $170</div>
+                                        <div>Designer Shoes (×1) - $180</div>
+                                    </div>
+                                </td>
+                                <td class="utility-value">$350</td>
+                                <td>
+                                    <button class="action-btn edit">✏️</button>
+                                    <button class="action-btn delete">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>T3</td>
+                                <td>2024-01-15 14:20:00</td>
+                                <td>
+                                    <div class="item-list">
+                                        <div>Garden Tools Set (×1) - $95</div>
+                                        <div>Plant Fertilizer (×2) - $56</div>
+                                    </div>
+                                </td>
+                                <td class="utility-value">$151</td>
+                                <td>
+                                    <button class="action-btn edit">✏️</button>
+                                    <button class="action-btn delete">🗑️</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Item Catalog Tab -->
+            <div id="catalog-tab" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h2>Item Catalog</h2>
+                        <p>Manage item utilities and weights for HUIM analysis</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-primary">
+                            <span class="icon">➕</span>
+                            Add Item
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="filter-section">
+                    <input type="text" placeholder="Search items..." class="search-input">
+                    <select class="filter-select">
+                        <option>All Categories</option>
+                        <option>Electronics</option>
+                        <option>Accessories</option>
+                        <option>Clothing</option>
+                        <option>Footwear</option>
+                        <option>Garden</option>
+                    </select>
+                </div>
+
+                <!-- Item Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">10</div>
+                        <div class="stat-label">Total Items</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$244</div>
+                        <div class="stat-label">Avg Utility</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">76%</div>
+                        <div class="stat-label">Avg Weight</div>
+                    </div>
+                </div>
+
+                <!-- Items Table -->
+                <div class="table-container">
+                    <h3>Item Catalog (10 items)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Category</th>
+                                <th>Base Utility</th>
+                                <th>Weight</th>
+                                <th>Frequency</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Smartphone</td>
+                                <td><span class="category-tag">Electronics</span></td>
+                                <td class="utility-value">$650</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 100%"></div>
+                                    </div>
+                                    100%
+                                </td>
+                                <td>24</td>
+                                <td>
+                                    <button class="action-btn edit">✏️</button>
+                                    <button class="action-btn delete">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Phone Case</td>
+                                <td><span class="category-tag">Accessories</span></td>
+                                <td class="utility-value">$25</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 80%"></div>
+                                    </div>
+                                    80%
+                                </td>
+                                <td>18</td>
+                                <td>
+                                    <button class="action-btn edit">✏️</button>
+                                    <button class="action-btn delete">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Summer Dress</td>
+                                <td><span class="category-tag">Clothing</span></td>
+                                <td class="utility-value">$85</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 80%"></div>
+                                    </div>
+                                    80%
+                                </td>
+                                <td>22</td>
+                                <td>
+                                    <button class="action-btn edit">✏️</button>
+                                    <button class="action-btn delete">🗑️</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mining Controls Tab -->
+            <div id="mining-tab" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h2>Mining Controls</h2>
+                        <p>Configure and control local HUIM discovery</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-success" id="start-mining">
+                            <span class="icon">▶️</span>
+                            Start Mining
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mining-layout">
+                    <!-- Configuration Panel -->
+                    <div class="mining-config">
+                        <div class="config-section">
+                            <h3>Algorithm Configuration</h3>
+                            
+                            <div class="form-group">
+                                <label>Minimum Utility Threshold: $<span id="utility-value">100</span></label>
+                                <input type="range" id="utility-threshold" min="10" max="1000" step="10" value="100" class="slider">
+                                <div class="slider-labels">
+                                    <span>$10</span>
+                                    <span>$1000</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Support Threshold: <span id="support-value">20.0</span>%</label>
+                                <input type="range" id="support-threshold" min="1" max="100" step="1" value="20" class="slider">
+                                <div class="slider-labels">
+                                    <span>1%</span>
+                                    <span>100%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Analysis Time Window</label>
+                                <select class="form-select">
+                                    <option>Last 24 Hours</option>
+                                    <option>Last 3 Days</option>
+                                    <option selected>Last 7 Days</option>
+                                    <option>Last 30 Days</option>
+                                    <option>All Time</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Model Update Frequency</label>
+                                <select class="form-select">
+                                    <option>Real-time</option>
+                                    <option selected>Daily</option>
+                                    <option>Weekly</option>
+                                    <option>Manual Only</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Mining Progress -->
+                        <div id="mining-progress" class="config-section" style="display: none;">
+                            <h3>Mining Progress</h3>
+                            <div class="progress-section">
+                                <div class="progress-info">
+                                    <span>Overall Progress</span>
+                                    <span id="progress-percent">0%</span>
+                                </div>
+                                <div class="progress-bar large">
+                                    <div id="progress-fill" class="progress-fill"></div>
+                                </div>
+                                <div id="progress-status" class="progress-status">
+                                    Ready to start mining...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Panel -->
+                    <div class="mining-status">
+                        <div class="status-section">
+                            <h3>Mining Statistics</h3>
+                            <div class="status-grid">
+                                <div class="status-item">
+                                    <span class="status-label">Last Run:</span>
+                                    <span class="status-value">2 hours ago</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">HUIMs Found:</span>
+                                    <span class="status-value highlight">142</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Avg Utility:</span>
+                                    <span class="status-value">$245</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Execution Time:</span>
+                                    <span class="status-value">1.2s</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-section">
+                            <h3>Federation Status</h3>
+                            <div class="status-grid">
+                                <div class="status-item">
+                                    <span class="status-label">Next Run:</span>
+                                    <span class="status-value">In 22 hours</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Federation Sync:</span>
+                                    <span class="status-value connected">Connected</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary full-width">Force Sync Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations Tab -->
+            <div id="recommendations-tab" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h2>Recommendation Dashboard</h2>
+                        <p>AI-powered recommendations based on local HUIM patterns</p>
+                    </div>
+                    <div class="header-actions">
+                        <select class="form-select">
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Recommendation Accuracy</div>
+                        <div class="stat-change positive">+5.2% from last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$2,340</div>
+                        <div class="stat-label">Revenue from Recs</div>
+                        <div class="stat-change positive">+12.8% from last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">64%</div>
+                        <div class="stat-label">Click-through Rate</div>
+                        <div class="stat-change negative">-2.1% from last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.6</div>
+                        <div class="stat-label">Avg Rating</div>
+                        <div class="stat-change positive">+0.3 from last week</div>
+                    </div>
+                </div>
+
+                <!-- Recommendations List -->
+                <div class="recommendations-container">
+                    <h3>Active Recommendations</h3>
+                    
+                    <div class="recommendation-card">
+                        <div class="rec-header">
+                            <span class="rec-type cross-sell">Cross-sell</span>
+                            <span class="rec-confidence">Confidence: 92.0%</span>
+                        </div>
+                        <h4>Recommended Itemset</h4>
+                        <div class="itemset-tags">
+                            <span class="item-tag">Smartphone</span>
+                            <span class="item-tag">Phone Case</span>
+                            <span class="item-tag">Screen Protector</span>
+                        </div>
+                        <p class="rec-reason">Customers who buy smartphones frequently purchase protective accessories</p>
+                        <div class="rec-actions">
+                            <span class="utility-value">Utility: $690</span>
+                            <button class="btn btn-primary">Apply Recommendation</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <div class="rec-header">
+                            <span class="rec-type upsell">Upsell</span>
+                            <span class="rec-confidence">Confidence: 81.0%</span>
+                        </div>
+                        <h4>Recommended Itemset</h4>
+                        <div class="itemset-tags">
+                            <span class="item-tag">Laptop</span>
+                            <span class="item-tag">Wireless Mouse</span>
+                            <span class="item-tag">Mechanical Keyboard</span>
+                        </div>
+                        <p class="rec-reason">Computer buyers often upgrade to premium peripherals for better productivity</p>
+                        <div class="rec-actions">
+                            <span class="utility-value">Utility: $1,365</span>
+                            <button class="btn btn-primary">Apply Recommendation</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Tab -->
+            <div id="privacy-tab" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h2>Privacy Settings</h2>
+                        <p>Control what data is shared with the federation</p>
+                    </div>
+                    <div class="privacy-status">
+                        <span class="icon">🔒</span>
+                        <span>Privacy Protected</span>
+                    </div>
+                </div>
+
+                <div class="privacy-layout">
+                    <!-- Data Sharing Controls -->
+                    <div class="privacy-section">
+                        <h3>Data Sharing Preferences</h3>
+                        
+                        <div class="privacy-option">
+                            <div class="option-info">
+                                <div class="option-title">Pattern Frequencies</div>
+                                <div class="option-desc">Share aggregated pattern occurrence counts</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="privacy-option">
+                            <div class="option-info">
+                                <div class="option-title">Utility Values</div>
+                                <div class="option-desc">Share actual monetary utility values</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="privacy-option">
+                            <div class="option-info">
+                                <div class="option-title">Item Frequencies</div>
+                                <div class="option-desc">Share how often items appear in transactions</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="privacy-option warning">
+                            <div class="option-info">
+                                <div class="option-title">Raw Transactions</div>
+                                <div class="option-desc">
+                                    <span class="warning-icon">⚠️</span>
+                                    Share complete transaction data (not recommended)
+                                </div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox">
+                                <span class="toggle-slider danger"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Security Status -->
+                    <div class="privacy-section">
+                        <h3>Security Status</h3>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-title">End-to-End Encryption</div>
+                                <div class="security-desc">Encrypt data before federation</div>
+                            </div>
+                            <div class="security-status active">
+                                <span class="status-dot"></span>
+                                Active
+                            </div>
+                        </div>
+
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-title">Secure Aggregation</div>
+                                <div class="security-desc">Use secure multi-party computation</div>
+                            </div>
+                            <div class="security-status active">
+                                <span class="status-dot"></span>
+                                Enabled
+                            </div>
+                        </div>
+
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-title">Local Computation</div>
+                                <div class="security-desc">Keep raw data on device</div>
+                            </div>
+                            <div class="security-status active">
+                                <span class="status-dot"></span>
+                                Verified
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Server Interface -->
+        <div id="server-view" class="view-container">
+            <div class="tab-navigation">
+                <button class="tab-btn active" onclick="switchServerTab('federation')">
+                    <span class="icon">📡</span>
+                    Federation Status
+                </button>
+                <button class="tab-btn" onclick="switchServerTab('patterns')">
+                    <span class="icon">🌐</span>
+                    Global Patterns
+                </button>
+                <button class="tab-btn" onclick="switchServerTab('monitoring')">
+                    <span class="icon">📊</span>
+                    Client Monitoring
+                </button>
+                <button class="tab-btn" onclick="switchServerTab('analytics')">
+                    <span class="icon">📈</span>
+                    Analytics
+                </button>
+            </div>
+
+            <!-- Federation Dashboard Tab -->
+            <div id="federation-tab" class="tab-content active">
+                <div class="content-header">
+                    <div>
+                        <h2>Federation Dashboard</h2>
+                        <p>Monitor federated learning network status and performance</p>
+                    </div>
+                    <div class="federation-status">
+                        <span class="status-dot active"></span>
+                        <span>Federation Active</span>
+                    </div>
+                </div>
+
+                <!-- Overview Metrics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Connected Clients</div>
+                        <div class="stat-detail">3 active</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">89</div>
+                        <div class="stat-label">Training Rounds</div>
+                        <div class="stat-detail">+8 today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">94.2%</div>
+                        <div class="stat-label">Model Accuracy</div>
+                        <div class="stat-detail">+2.1% this week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">402</div>
+                        <div class="stat-label">Global HUIMs</div>
+                        <div class="stat-detail">+34 discovered</div>
+                    </div>
+                </div>
+
+                <div class="federation-layout">
+                    <!-- Client Status -->
+                    <div class="client-status-panel">
+                        <h3>Client Status</h3>
+                        
+                        <div class="client-item">
+                            <div class="client-info">
+                                <div class="client-status-dot active"></div>
+                                <div>
+                                    <div class="client-name">Electronics Retail Store</div>
+                                    <div class="client-id">client-1</div>
+                                </div>
+                            </div>
+                            <div class="client-details">
+                                <div class="client-status-text">Active</div>
+                                <div class="client-time">2 min ago</div>
+                            </div>
+                            <div class="contribution-bar">
+                                <div class="contribution-label">Contribution: 85%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-item">
+                            <div class="client-info">
+                                <div class="client-status-dot active"></div>
+                                <div>
+                                    <div class="client-name">Fashion Retail Store</div>
+                                    <div class="client-id">client-2</div>
+                                </div>
+                            </div>
+                            <div class="client-details">
+                                <div class="client-status-text">Active</div>
+                                <div class="client-time">1 min ago</div>
+                            </div>
+                            <div class="contribution-bar">
+                                <div class="contribution-label">Contribution: 92%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 92%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-item">
+                            <div class="client-info">
+                                <div class="client-status-dot syncing"></div>
+                                <div>
+                                    <div class="client-name">Home & Garden Store</div>
+                                    <div class="client-id">client-3</div>
+                                </div>
+                            </div>
+                            <div class="client-details">
+                                <div class="client-status-text">Syncing</div>
+                                <div class="client-time">5 min ago</div>
+                            </div>
+                            <div class="contribution-bar">
+                                <div class="contribution-label">Contribution: 78%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 78%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Training Progress -->
+                    <div class="training-panel">
+                        <h3>Current Training Round</h3>
+                        
+                        <div class="training-progress">
+                            <div class="progress-info">
+                                <span>Round #89 Progress</span>
+                                <span>65%</span>
+                            </div>
+                            <div class="progress-bar large">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                        </div>
+
+                        <div class="training-stats">
+                            <div class="training-stat">
+                                <span class="stat-label">Participating:</span>
+                                <span class="stat-value">3/3 clients</span>
+                            </div>
+                            <div class="training-stat">
+                                <span class="stat-label">ETA:</span>
+                                <span class="stat-value">3 minutes</span>
+                            </div>
+                            <div class="training-stat">
+                                <span class="stat-label">Loss:</span>
+                                <span class="stat-value highlight">0.0234</span>
+                            </div>
+                            <div class="training-stat">
+                                <span class="stat-label">Convergence:</span>
+                                <span class="stat-value">Improving</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Patterns Tab -->
+            <div id="patterns-tab" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h2>Global Pattern Discovery</h2>
+                        <p>High utility itemsets discovered across the federation</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary">
+                            <span class="icon">📥</span>
+                            Export Patterns
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Global Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Global Patterns</div>
+                        <div class="stat-detail">Discovered this round</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$43,160</div>
+                        <div class="stat-label">Total Global Utility</div>
+                        <div class="stat-detail">Across 3 retail stores</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">56%</div>
+                        <div class="stat-label">Avg Support</div>
+                        <div class="stat-detail">Cross-client consistency</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Rising Trends</div>
+                        <div class="stat-detail">Growing patterns</div>
+                    </div>
+                </div>
+
+                <!-- Patterns Table -->
+                <div class="table-container">
+                    <h3>Global High Utility Itemsets (5 patterns)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Itemset</th>
+                                <th>Global Utility</th>
+                                <th>Support</th>
+                                <th>Confidence</th>
+                                <th>Clients</th>
+                                <th>Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="itemset-tags">
+                                        <span class="item-tag">Smartphone</span>
+                                        <span class="item-tag">Case</span>
+                                        <span class="item-tag">Screen Protector</span>
+                                    </div>
+                                </td>
+                                <td class="utility-value">$15,680</td>
+                                <td>
+                                    <div class="support-bar">
+                                        <div class="progress-bar small">
+                                            <div class="progress-fill" style="width: 67%"></div>
+                                        </div>
+                                        67.0%
+                                    </div>
+                                </td>
+                                <td>89.0%</td>
+                                <td><span class="client-count">3/3</span></td>
+                                <td>
+                                    <div class="trend rising">
+                                        <span class="trend-icon">📈</span>
+                                        Rising
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="itemset-tags">
+                                        <span class="item-tag">Laptop</span>
+                                        <span class="item-tag">Mouse</span>
+                                        <span class="item-tag">Keyboard</span>
+                                    </div>
+                                </td>
+                                <td class="utility-value">$24,750</td>
+                                <td>
+                                    <div class="support-bar">
+                                        <div class="progress-bar small">
+                                            <div class="progress-fill" style="width: 54%"></div>
+                                        </div>
+                                        54.0%
+                                    </div>
+                                </td>
+                                <td>82.0%</td>
+                                <td><span class="client-count">2/3</span></td>
+                                <td>
+                                    <div class="trend stable">
+                                        <span class="trend-icon">➖</span>
+                                        Stable
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Client Monitoring Tab -->
+            <div id="monitoring-tab" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h2>Client Monitoring</h2>
+                        <p>Monitor client health, performance, and data quality</p>
+                    </div>
+                    <div class="monitoring-status">
+                        <div class="status-indicator">
+                            <span class="status-dot active"></span>
+                            <span>2 Healthy</span>
+                        </div>
+                        <div class="status-indicator">
+                            <span class="status-dot warning"></span>
+                            <span>1 Warning</span>
+                        </div>
+                        <div class="status-indicator">
+                            <span class="status-dot error"></span>
+                            <span>0 Error</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client Overview -->
+                <div class="monitoring-layout">
+                    <div class="client-overview">
+                        <h3>Client Overview</h3>
+                        
+                        <div class="client-monitor-item active" onclick="selectClient('client-1')">
+                            <div class="client-header">
+                                <div class="client-info">
+                                    <span class="status-icon healthy">✅</span>
+                                    <div>
+                                        <div class="client-name">Electronics Retail Store</div>
+                                        <div class="client-id">client-1</div>
+                                    </div>
+                                </div>
+                                <div class="client-status">
+                                    <div class="status-text healthy">Healthy</div>
+                                    <div class="status-time">2 min ago</div>
+                                </div>
+                            </div>
+                            <div class="client-metrics">
+                                <div class="metric">
+                                    <span class="metric-label">Quality:</span>
+                                    <span class="metric-value">94%</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Score:</span>
+                                    <span class="metric-value">85%</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Latency:</span>
+                                    <span class="metric-value">45ms</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Accuracy:</span>
+                                    <span class="metric-value">89.2%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-monitor-item" onclick="selectClient('client-2')">
+                            <div class="client-header">
+                                <div class="client-info">
+                                    <span class="status-icon healthy">✅</span>
+                                    <div>
+                                        <div class="client-name">Fashion Retail Store</div>
+                                        <div class="client-id">client-2</div>
+                                    </div>
+                                </div>
+                                <div class="client-status">
+                                    <div class="status-text healthy">Healthy</div>
+                                    <div class="status-time">1 min ago</div>
+                                </div>
+                            </div>
+                            <div class="client-metrics">
+                                <div class="metric">
+                                    <span class="metric-label">Quality:</span>
+                                    <span class="metric-value">98%</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Score:</span>
+                                    <span class="metric-value">92%</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Latency:</span>
+                                    <span class="metric-value">32ms</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Accuracy:</span>
+                                    <span class="metric-value">91.7%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-monitor-item" onclick="selectClient('client-3')">
+                            <div class="client-header">
+                                <div class="client-info">
+                                    <span class="status-icon warning">⚠️</span>
+                                    <div>
+                                        <div class="client-name">Home & Garden Store</div>
+                                        <div class="client-id">client-3</div>
+                                    </div>
+                                </div>
+                                <div class="client-status">
+                                    <div class="status-text warning">Warning</div>
+                                    <div class="status-time">5 min ago</div>
+                                </div>
+                            </div>
+                            <div class="client-metrics">
+                                <div class="metric">
+                                    <span class="metric-label">Quality:</span>
+                                    <span class="metric-value">87%</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Score:</span>
+                                    <span class="metric-value">78%</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Latency:</span>
+                                    <span class="metric-value">89ms</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Accuracy:</span>
+                                    <span class="metric-value">83.6%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Client Details -->
+                    <div class="client-details">
+                        <div id="client-details-content">
+                            <div class="details-placeholder">
+                                <span class="icon">📊</span>
+                                <div>Select a client to view detailed metrics</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics-tab" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h2>Analytics Dashboard</h2>
+                        <p>Comprehensive federation performance analytics</p>
+                    </div>
+                    <div class="header-actions">
+                        <select class="form-select">
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                            <option>Last 90 Days</option>
+                        </select>
+                        <button class="btn btn-primary">
+                            <span class="icon">📅</span>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="analytics-summary">
+                    <div class="summary-card">
+                        <div class="summary-value">$89,420</div>
+                        <div class="summary-label">Total Revenue</div>
+                        <div class="summary-change positive">+18.5% growth</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">92.4%</div>
+                        <div class="summary-label">Avg Accuracy</div>
+                        <div class="summary-change positive">+2.1% improvement</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">402</div>
+                        <div class="summary-label">Total Patterns</div>
+                        <div class="summary-change positive">+34 this week</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">3</div>
+                        <div class="summary-label">Active Clients</div>
+                        <div class="summary-change">All connected</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">99.8%</div>
+                        <div class="summary-label">Uptime</div>
+                        <div class="summary-change positive">Excellent</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">8.4GB</div>
+                        <div class="summary-label">Data Processed</div>
+                        <div class="summary-change">Today</div>
+                    </div>
+                </div>
+
+                <!-- Chart and Insights -->
+                <div class="analytics-layout">
+                    <div class="chart-container">
+                        <h3>Performance Trends</h3>
+                        <div class="chart-placeholder">
+                            <div class="chart-bars">
+                                <div class="chart-bar" style="height: 60%"></div>
+                                <div class="chart-bar" style="height: 75%"></div>
+                                <div class="chart-bar" style="height: 45%"></div>
+                                <div class="chart-bar" style="height: 90%"></div>
+                                <div class="chart-bar" style="height: 85%"></div>
+                                <div class="chart-bar" style="height: 95%"></div>
+                                <div class="chart-bar" style="height: 80%"></div>
+                            </div>
+                            <div class="chart-labels">
+                                <span>Mon</span>
+                                <span>Tue</span>
+                                <span>Wed</span>
+                                <span>Thu</span>
+                                <span>Fri</span>
+                                <span>Sat</span>
+                                <span>Sun</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="insights-panel">
+                        <h3>Federation Insights</h3>
+                        <div class="insight-list">
+                            <div class="insight-item">
+                                • Cross-sell recommendations show highest effectiveness at 87%
+                            </div>
+                            <div class="insight-item">
+                                • All 3 retail stores maintain consistent participation
+                            </div>
+                            <div class="insight-item">
+                                • Data quality improved by 12% this month
+                            </div>
+                            <div class="insight-item">
+                                • Network latency optimized across retail locations
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

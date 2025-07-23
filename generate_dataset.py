@@ -87,6 +87,6 @@ def generate_foodmart_dataset(num_transactions=1500, output_file="generated_food
     return output_file
 
 if __name__ == "__main__":
-    # Generate the dataset
-    output_file = generate_foodmart_dataset(1500, "generated_foodmart_dataset.csv")
+    # Generate the dataset with 4000 transactions
+    output_file = generate_foodmart_dataset(4000, "generated_foodmart_dataset.csv")
     print(f"\nDataset generated successfully: {output_file}") 

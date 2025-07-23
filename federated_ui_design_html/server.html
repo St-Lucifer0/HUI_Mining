@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUIM Federation Server</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Header -->
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="nav-left">
+                    <h1 class="logo">HUIM Federation Server</h1>
+                    <span class="subtitle">Federated Learning Coordinator</span>
+                </div>
+                
+                <div class="federation-status">
+                    <span class="status-dot active"></span>
+                    <span>Federation Active - 3 Clients</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Server Interface -->
+        <div class="view-container active">
+            <div class="tab-navigation">
+                <button class="tab-btn active" onclick="switchServerTab('federation')">
+                    <span class="icon">📡</span>
+                    Federation Status
+                </button>
+                <button class="tab-btn" onclick="switchServerTab('patterns')">
+                    <span class="icon">🌐</span>
+                    Global Patterns
+                </button>
+                <button class="tab-btn" onclick="switchServerTab('monitoring')">
+                    <span class="icon">📊</span>
+                    Client Monitoring
+                </button>
+                <button class="tab-btn" onclick="switchServerTab('analytics')">
+                    <span class="icon">📈</span>
+                    Analytics
+                </button>
+            </div>
+
+            <!-- All server tab content from index.html -->
+            <!-- Federation Dashboard Tab -->
+            <div id="federation-tab" class="tab-content active">
+                <!-- Same content as in index.html -->
+            </div>
+
+            <!-- Other tabs... -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
