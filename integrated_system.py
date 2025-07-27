@@ -494,7 +494,8 @@ class IntegratedSystem:
                     host=self.host,
                     port=self.api_port,
                     debug=False,
-                    use_reloader=False
+                    use_reloader=False,
+                    allow_unsafe_werkzeug=True
                 )
             except Exception as e:
                 logger.error(f"Failed to start Flask server: {e}")
