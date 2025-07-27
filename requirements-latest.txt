@@ -1,0 +1,37 @@
+# Latest requirements for Python 3.11+ (matches server environment)
+
+# Core gRPC and protobuf (latest versions)
+grpcio>=1.60.0
+grpcio-tools>=1.60.0
+protobuf>=6.31.0
+
+# Data processing (latest versions)
+numpy>=1.26.0
+pandas>=2.1.0
+scikit-learn>=1.3.0
+
+# Security and privacy
+cryptography>=41.0.0
+pycryptodome>=3.19.0
+psutil>=5.9.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.15.0
+dash>=2.11.0
+
+# Web framework
+flask>=2.3.0
+flask-cors>=4.0.0
+flask-socketio>=5.3.0
+
+# Utilities
+requests>=2.31.0
+
+# Development tools
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0
