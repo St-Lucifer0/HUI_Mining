@@ -19,17 +19,17 @@ class IntegrationTester:
         
     def run_test(self, test_name, test_func):
         """Run a test and record results"""
-        print(f"\n🧪 Running: {test_name}")
+        print(f"\n[TEST] Running: {test_name}")
         try:
             result = test_func()
             if result:
-                print(f"✅ PASS: {test_name}")
+                print(f"[PASS] {test_name}")
                 self.test_results.append((test_name, True, None))
             else:
-                print(f"❌ FAIL: {test_name}")
+                print(f"[FAIL] {test_name}")
                 self.test_results.append((test_name, False, "Test returned False"))
         except Exception as e:
-            print(f"❌ ERROR: {test_name} - {str(e)}")
+            print(f"[ERROR] {test_name} - {str(e)}")
             self.test_results.append((test_name, False, str(e)))
     
     def test_api_server_health(self):
@@ -58,11 +58,11 @@ class IntegrationTester:
             try:
                 response = requests.get(f"{self.server_url}{endpoint}", timeout=5)
                 if response.status_code != 200:
-                    print(f"   ❌ {endpoint}: {response.status_code}")
+                    print(f"   [FAIL] {endpoint}: {response.status_code}")
                     return False
-                print(f"   ✅ {endpoint}: OK")
+                print(f"   [PASS] {endpoint}: OK")
             except requests.exceptions.RequestException as e:
-                print(f"   ❌ {endpoint}: {str(e)}")
+                print(f"   [FAIL] {endpoint}: {str(e)}")
                 return False
         
         return True
@@ -72,7 +72,7 @@ class IntegrationTester:
         try:
             response = requests.get(f"{self.server_url}/", timeout=5)
             if response.status_code == 200 and "Federated HUIM" in response.text:
-                print("   ✅ Web interface accessible")
+                print("   [PASS] Web interface accessible")
                 return True
             return False
         except requests.exceptions.RequestException:
@@ -94,14 +94,14 @@ class IntegrationTester:
                 response = stub.HealthCheck(HealthCheckRequest())
             except ImportError:
                 # If HealthCheckRequest is not available, skip this test
-                print("   ⚠️  HealthCheckRequest not available, skipping federated server test")
+                print("   [WARN] HealthCheckRequest not available, skipping federated server test")
                 return True
             
-            print("   ✅ Federated server responding")
+            print("   [PASS] Federated server responding")
             return True
             
         except Exception as e:
-            print(f"   ❌ Federated server: {str(e)}")
+            print(f"   [FAIL] Federated server: {str(e)}")
             return False
     
     def test_fp_growth_modules(self):
@@ -116,9 +116,9 @@ class IntegrationTester:
         for module in modules:
             try:
                 __import__(module)
-                print(f"   ✅ {module}: OK")
+                print(f"   [PASS] {module}: OK")
             except ImportError as e:
-                print(f"   ❌ {module}: {str(e)}")
+                print(f"   [FAIL] {module}: {str(e)}")
                 return False
         
         return True
@@ -136,12 +136,12 @@ class IntegrationTester:
             reset_value = get_min_utility_threshold()
             
             if new_value == 200 and reset_value == original:
-                print("   ✅ Threshold control working")
+                print("   [PASS] Threshold control working")
                 return True
             return False
             
         except Exception as e:
-            print(f"   ❌ Threshold control: {str(e)}")
+            print(f"   [FAIL] Threshold control: {str(e)}")
             return False
     
     def test_mining_operation(self):
@@ -164,7 +164,7 @@ class IntegrationTester:
                 job_id = job_data.get('job_id')
                 
                 if job_id:
-                    print(f"   ✅ Mining job started: {job_id}")
+                    print(f"   [PASS] Mining job started: {job_id}")
                     
                     # Check job status
                     time.sleep(2)
@@ -174,13 +174,13 @@ class IntegrationTester:
                     )
                     
                     if status_response.status_code == 200:
-                        print("   ✅ Mining status check working")
+                        print("   [PASS] Mining status check working")
                         return True
                 
             return False
             
         except Exception as e:
-            print(f"   ❌ Mining operation: {str(e)}")
+            print(f"   [FAIL] Mining operation: {str(e)}")
             return False
     
     def test_file_structure(self):
@@ -197,9 +197,9 @@ class IntegrationTester:
         
         for file_path in required_files:
             if not Path(file_path).exists():
-                print(f"   ❌ Missing file: {file_path}")
+                print(f"   [FAIL] Missing file: {file_path}")
                 return False
-            print(f"   ✅ {file_path}: OK")
+            print(f"   [PASS] {file_path}: OK")
         
         return True
     
@@ -209,7 +209,7 @@ class IntegrationTester:
             # Test localhost connectivity
             response = requests.get(f"{self.server_url}/api/health", timeout=5)
             if response.status_code == 200:
-                print("   ✅ Local connectivity: OK")
+                print("   [PASS] Local connectivity: OK")
                 
                 # Test if server is accessible from network
                 import socket
@@ -218,21 +218,21 @@ class IntegrationTester:
                 sock.close()
                 
                 if result == 0:
-                    print("   ✅ Network accessibility: OK")
+                    print("   [PASS] Network accessibility: OK")
                     return True
                 else:
-                    print("   ⚠️  Network accessibility: Limited (localhost only)")
+                    print("   [WARN] Network accessibility: Limited (localhost only)")
                     return True  # Still pass for local testing
                     
             return False
             
         except Exception as e:
-            print(f"   ❌ Network connectivity: {str(e)}")
+            print(f"   [FAIL] Network connectivity: {str(e)}")
             return False
     
     def run_all_tests(self):
         """Run all integration tests"""
-        print("🚀 Starting Integration Tests for FP-Growth Federated Learning System")
+        print("[INFO] Starting Integration Tests for FP-Growth Federated Learning System")
         print("=" * 70)
         
         tests = [
@@ -255,7 +255,7 @@ class IntegrationTester:
     def print_summary(self):
         """Print test summary"""
         print("\n" + "=" * 70)
-        print("📊 INTEGRATION TEST SUMMARY")
+        print("[SUMMARY] INTEGRATION TEST SUMMARY")
         print("=" * 70)
         
         passed = sum(1 for _, success, _ in self.test_results if success)
@@ -267,11 +267,11 @@ class IntegrationTester:
         print(f"Success Rate: {(passed/total)*100:.1f}%")
         
         if passed == total:
-            print("\n🎉 ALL TESTS PASSED! Your system is fully integrated and ready.")
+            print("\n[SUCCESS] ALL TESTS PASSED! Your system is fully integrated and ready.")
         else:
-            print("\n⚠️  Some tests failed. Check the errors above.")
+            print("\n[WARNING] Some tests failed. Check the errors above.")
             
-            print("\n❌ Failed Tests:")
+            print("\n[FAILED TESTS]:")
             for test_name, success, error in self.test_results:
                 if not success:
                     print(f"   - {test_name}: {error}")
@@ -280,13 +280,13 @@ class IntegrationTester:
         
         # Provide next steps
         if passed == total:
-            print("🚀 NEXT STEPS:")
+            print("[NEXT STEPS]:")
             print("1. Start server: start_integrated_server.bat")
             print("2. Start clients: start_integrated_client.bat")
             print("3. Open browser: http://localhost:5000")
             print("4. Test all buttons and features")
         else:
-            print("🔧 TROUBLESHOOTING:")
+            print("[TROUBLESHOOTING]:")
             print("1. Check if all required packages are installed")
             print("2. Verify server is running on port 5000")
             print("3. Check firewall settings")
@@ -307,7 +307,7 @@ def main():
     tester = IntegrationTester(args.server_url)
     
     if args.quick:
-        print("🏃 Running Quick Tests...")
+        print("[INFO] Running Quick Tests...")
         quick_tests = [
             ("API Server Health", tester.test_api_server_health),
             ("Web Interface", tester.test_web_interface),
