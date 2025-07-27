@@ -166,7 +166,7 @@ current = get_min_utility_threshold()
 set_min_utility_threshold(500)
 
 # Reset to default
-reset_min_utility_threshold()
+#reset_min_utility_threshold()
 ```
 
 ## 🌐 Network Setup
