@@ -172,18 +172,32 @@ class IntegratedSystem:
         """Start the system in client mode"""
         logger.info("Starting Integrated System in CLIENT mode")
         
+        if not self.client_id:
+            logger.error("Client ID required for client mode")
+            return False
+        
         if not self.server_address:
             logger.error("Server address required for client mode")
             return False
         
+        # Check if backend modules are available
+        if not BACKEND_AVAILABLE:
+            logger.error("Backend modules not available. Cannot start client mode.")
+            logger.error("Please ensure all required packages are installed: pip install -r requirements.txt")
+            return False
+        
         # Initialize federated client
-        self.federated_client = FederatedLearningClient(
-            client_id=self.client_id,
-            server_address=self.server_address,
-            server_port=self.federated_port,
-            min_utility_threshold=self.config['mining']['default_threshold'],
-            epsilon=self.config['mining']['privacy_epsilon']
-        )
+        try:
+            self.federated_client = FederatedLearningClient(
+                client_id=self.client_id,
+                server_address=self.server_address,
+                server_port=self.federated_port,
+                min_utility_threshold=self.config['mining']['default_threshold'],
+                epsilon=self.config['mining']['privacy_epsilon']
+            )
+        except Exception as e:
+            logger.error(f"Failed to initialize federated client: {e}")
+            return False
         
         # Connect to server
         if not self.federated_client.connect_to_server():
